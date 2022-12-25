@@ -1,0 +1,58 @@
+import { DefaultTheme } from 'styled-components';
+
+export const theme: DefaultTheme = {
+  colors: {
+    primary: '#0070f3',
+    secondary: '#ff6600',
+  },
+  iconSize: {
+    sm: '0.875rem',
+    md: '1.5rem',
+    lg: '2.25rem',
+  },
+  titleSize: {
+    sm: '1.25rem',
+    md: '1.75rem',
+    lg: '3rem',
+  },
+  textSize: {
+    xs: '0.75rem',
+    sm: '0.875rem',
+    md: '1rem',
+    lg: '1.125rem',
+  },
+  grayscale: {
+    0: '#000000',
+    10: '#111111',
+    20: '#222222',
+    30: '#333333',
+    40: '#444444',
+    50: '#555555',
+    60: '#666666',
+    70: '#777777',
+    80: '#888888',
+    90: '#999999',
+    100: '#aaaaaa',
+    110: '#bbbbbb',
+    120: '#cccccc',
+    130: '#dddddd',
+    140: '#eeeeee',
+    150: '#ffffff',
+  },
+  gap: {
+    0: '0rem',
+    1: '1px',
+    2: '0.125rem',
+    4: '0.25rem',
+    8: '0.5rem',
+    12: '0.75rem',
+    16: '1rem',
+    20: '1.25rem',
+    24: '1.5rem',
+    32: '2rem',
+    40: '2.5rem',
+    48: '3rem',
+    56: '3.5rem',
+    64: '4rem',
+  },
+};
