@@ -22,21 +22,23 @@ export const CartsRouter = ({
 } & NavigationDescriptor) => {
   const { loading, carts } = useCarts();
   const location = useLocation();
-  const { cartId } = useParams<{ cartId?: string }>();
+  const { itemId } = useParams<{ itemId?: string }>();
 
   console.log('CartsRouter', carts);
   console.log('location', location);
-  console.log(name, cartId);
+  console.log(name, itemId);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('CartsRouter useEffect');
+    if (!itemId) {
+      navigate(`${mountPoint}/all`);
+    }
   }, []);
 
   return (
     <Routes>
       <Route
-        index
+        path="/create"
         element={
           <div>
             <h1>{label}</h1>
@@ -45,7 +47,7 @@ export const CartsRouter = ({
         }
       />
       <Route
-        path="/:cartId"
+        path="/:itemId"
         element={
           <div>
             <h1>{label}</h1>
@@ -54,7 +56,7 @@ export const CartsRouter = ({
         }
       />
       <Route
-        path="*"
+        index
         element={
           <div>
             <h1>{label}</h1>

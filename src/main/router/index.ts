@@ -1,4 +1,4 @@
-import { IPC_ROUTER_CHANNEL } from './constants';
+import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from './constants';
 import { isKnownIPCMessageType } from './helpers/isKnownIPCMessageType';
 import { Routes } from './routes';
 
@@ -24,4 +24,19 @@ export const IPCRouter = async (
     type: message.type,
     payload: result,
   });
+};
+
+export const IPCScriptsRouter = async (
+  ipcEvent: Electron.IpcMainEvent,
+  messages: unknown[]
+) => {
+  console.log('IPCScriptsRouter', messages);
+
+  const [message] = messages;
+
+  // ipcEvent.reply(IPC_SCRIPTS_CHANNEL, {
+  //   requestId: message.requestId,
+  //   type: message.type,
+  //   payload: result,
+  // });
 };

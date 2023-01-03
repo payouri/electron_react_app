@@ -14,7 +14,12 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { IPCRouter, IPC_ROUTER_CHANNEL } from './router';
+import {
+  IPCRouter,
+  IPCScriptsRouter,
+  IPC_ROUTER_CHANNEL,
+  IPC_SCRIPTS_CHANNEL,
+} from './router';
 
 class AppUpdater {
   constructor() {
@@ -26,6 +31,7 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
+ipcMain.on(IPC_SCRIPTS_CHANNEL, IPCScriptsRouter);
 ipcMain.on(IPC_ROUTER_CHANNEL, IPCRouter);
 
 if (process.env.NODE_ENV === 'production') {

@@ -1,7 +1,11 @@
+import { InjectedScripts } from 'main/injectApps/helpers/scripts/types';
 import { AppConfig } from '../config/types';
 import { Cart } from '../entities/Cart/Cart.types';
 import { Item } from '../entities/Item/Item.types';
 import { Tag } from '../entities/Tag/Tag.types';
+import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from './constants';
+
+export type IPCChannel = typeof IPC_ROUTER_CHANNEL | typeof IPC_SCRIPTS_CHANNEL;
 
 type ListQuery = {
   start: number;
@@ -9,6 +13,7 @@ type ListQuery = {
 };
 
 export enum IPCMessageType {
+  OPEN_BROWSER = 'OPEN_BROWSER',
   GET_CONFIG = 'GET_CONFIG',
   GET_CONFIG_PROPERTY = 'GET_CONFIG_PROPERTY',
   SAVE_CONFIG = 'SAVE_CONFIG',
@@ -73,6 +78,11 @@ export type IPCMessagePayload = {
   [IPCMessageType.DELETE_CART]: {
     _id: string;
   };
+  [IPCMessageType.OPEN_BROWSER]: {
+    url: string;
+    scriptsToRun?: InjectedScripts[];
+    maximize?: boolean;
+  };
 };
 
 export type IPCResponsePayload = {
@@ -95,6 +105,7 @@ export type IPCResponsePayload = {
   [IPCMessageType.CREATE_CART]: Cart;
   [IPCMessageType.UPDATE_CART]: Cart;
   [IPCMessageType.DELETE_CART]: void;
+  [IPCMessageType.OPEN_BROWSER]: void;
 };
 
 export type IncomingIPCMessage<Type extends IPCMessageType = IPCMessageType> = {

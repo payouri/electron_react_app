@@ -1,6 +1,6 @@
 import { WebContents } from 'electron';
-import { fileLogger } from '../../../Logger';
-import { CustomResult } from '../../../../utils/types';
+import { fileLogger } from '../../Logger';
+import { CustomResult } from '../../../utils/types';
 
 export const executeJavascript = async <Result>(
   webContent: WebContents,
