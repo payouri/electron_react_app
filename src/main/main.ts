@@ -20,6 +20,9 @@ import {
   IPC_ROUTER_CHANNEL,
   IPC_SCRIPTS_CHANNEL,
 } from './router';
+import { getSecondaryWindow } from './secondary';
+import { SecondaryWindowType } from './secondary/types';
+import { windowMessageBridge } from './lib/MessageBridge';
 
 class AppUpdater {
   constructor() {
@@ -95,6 +98,14 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+
+    const secondaryWindow = getSecondaryWindow(SecondaryWindowType.DEFAULT);
+    mainWindow.webContents.postMessage('message-bridge', null, [
+      windowMessageBridge.port1,
+      windowMessageBridge.port2,
+    ]);
+
+    secondaryWindow.show();
   });
 
   mainWindow.on('closed', () => {

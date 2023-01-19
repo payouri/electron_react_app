@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { customAlphabet } from 'nanoid';
 
 const generateId = customAlphabet('abcdefghijklmnopqrstuvwxyz', 10);
@@ -22,6 +23,12 @@ export const initRootPageNode = () => {
   Array.from(document.body.children).forEach((child) => {
     pageNode.appendChild(child);
   });
+
+  for (const style in document.body.style) {
+    if (Object.prototype.hasOwnProperty.call(document.body.style, style)) {
+      pageNode.style[style] = document.body.style[style];
+    }
+  }
 
   document.body.replaceChildren(pageNode);
 

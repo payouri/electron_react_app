@@ -1,3 +1,5 @@
+import { getSecondaryWindow } from 'main/secondary';
+import { SecondaryWindowType } from 'main/secondary/types';
 import { getElementPickerScript } from '../../../injectApps/helpers/scripts';
 import { executeJavascript, getBrowserWindow } from '../../../lib/Browser';
 import {
@@ -5,6 +7,12 @@ import {
   IPCMessageType,
   IPCResponsePayload,
 } from '../../types';
+
+import { windowMessageBridge } from '../../../lib/MessageBridge';
+
+// const secondaryWindow = getSecondaryWindow(SecondaryWindowType.DEFAULT);
+
+// secondaryWindow.show();
 
 export const BrowserRoutes = {
   [IPCMessageType.OPEN_BROWSER]: async (
@@ -28,6 +36,11 @@ export const BrowserRoutes = {
     if (scriptsToRun?.length) {
       console.log('scriptsToRun', scriptsToRun);
     }
+
+    browser.webContents.postMessage('message-bridge', null, [
+      windowMessageBridge.port1,
+      windowMessageBridge.port2,
+    ]);
 
     browser.loadURL(url, {
       userAgent: 'Chrome',

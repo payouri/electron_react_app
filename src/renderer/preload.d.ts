@@ -1,5 +1,8 @@
-import { initInjectedApps } from 'main/injectApps';
-import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from 'main/router/constants';
+import { initInjectedApps } from '../main/injectApps';
+import {
+  IPC_ROUTER_CHANNEL,
+  IPC_SCRIPTS_CHANNEL,
+} from '../main/router/constants';
 
 type Channel = typeof IPC_ROUTER_CHANNEL | typeof IPC_SCRIPTS_CHANNEL;
 
