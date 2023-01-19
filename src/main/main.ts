@@ -32,6 +32,7 @@ class AppUpdater {
   }
 }
 
+let portsWereSet = false;
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on(IPC_SCRIPTS_CHANNEL, IPCScriptsRouter);
@@ -89,7 +90,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on('ready-to-show', async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
@@ -99,10 +100,12 @@ const createWindow = async () => {
       mainWindow.show();
     }
 
-    const secondaryWindow = getSecondaryWindow(SecondaryWindowType.DEFAULT);
+    const secondaryWindow = await getSecondaryWindow(
+      SecondaryWindowType.DEFAULT
+    );
+
     mainWindow.webContents.postMessage('message-bridge', null, [
       windowMessageBridge.port1,
-      windowMessageBridge.port2,
     ]);
 
     secondaryWindow.show();

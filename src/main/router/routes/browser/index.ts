@@ -37,11 +37,6 @@ export const BrowserRoutes = {
       console.log('scriptsToRun', scriptsToRun);
     }
 
-    browser.webContents.postMessage('message-bridge', null, [
-      windowMessageBridge.port1,
-      windowMessageBridge.port2,
-    ]);
-
     browser.loadURL(url, {
       userAgent: 'Chrome',
     });

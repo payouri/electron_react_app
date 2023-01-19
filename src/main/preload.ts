@@ -3,19 +3,23 @@ import { nanoid } from 'nanoid';
 import { initInjectedApps } from './injectApps';
 import { IPCChannel } from './router';
 
-// Nous devons attendre que le monde principal soit prêt à recevoir le message avant
-// d'envoyer le port. Nous créons cette promesse dans le préchargement afin de garantir que
-// l'écouteur du onload soit enregistré avant que l'événement load ne soit déclenché.
+let ports = new Set<MessagePort>();
+
 const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;
 });
 
 ipcRenderer.on('message-bridge', async (event) => {
   await windowLoaded;
-  // On utilise un window.postMessage normal pour transferrer le port du monde isolé
-  // vers le monde principal.
-  console.log(event.ports);
-  window.postMessage('message-bridge', '*', event.ports);
+  if (!ports.size) {
+    event.ports.forEach((port) => {
+      ports.add(port);
+    });
+  }
+  console.log({
+    ports: ports.size,
+  });
+  window.postMessage('message-bridge', '*', [...ports]);
 });
 
 contextBridge.exposeInMainWorld('electron', {
@@ -37,5 +41,6 @@ contextBridge.exposeInMainWorld('electron', {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },
+  ports,
   nanoid,
 });

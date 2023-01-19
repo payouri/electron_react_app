@@ -7,8 +7,8 @@ import { store } from './store';
 import { GlobalStyle } from './styles/global.styles';
 import { theme } from './styles/theme';
 
-usePortMessaging();
 export function App() {
+  usePortMessaging();
   return (
     <ThemeProvider theme={theme}>
       <StoreProvider store={store}>
