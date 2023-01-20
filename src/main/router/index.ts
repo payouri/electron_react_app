@@ -1,6 +1,7 @@
 import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from './constants';
 import { isKnownIPCMessageType } from './helpers/isKnownIPCMessageType';
 import { Routes } from './routes';
+import { MessageBridgeHandler } from './routes/bridge';
 
 export * from './types';
 export * from './constants';
@@ -40,3 +41,5 @@ export const IPCScriptsRouter = async (
   //   payload: result,
   // });
 };
+
+export const IPCCrossWindowRouter = MessageBridgeHandler;

@@ -3,25 +3,6 @@ import { nanoid } from 'nanoid';
 import { initInjectedApps } from './injectApps';
 import { IPCChannel } from './router';
 
-let ports = new Set<MessagePort>();
-
-const windowLoaded = new Promise((resolve) => {
-  window.onload = resolve;
-});
-
-ipcRenderer.on('message-bridge', async (event) => {
-  await windowLoaded;
-  if (!ports.size) {
-    event.ports.forEach((port) => {
-      ports.add(port);
-    });
-  }
-  console.log({
-    ports: ports.size,
-  });
-  window.postMessage('message-bridge', '*', [...ports]);
-});
-
 contextBridge.exposeInMainWorld('electron', {
   initInjectedApps,
   ipcRenderer: {
@@ -41,6 +22,5 @@ contextBridge.exposeInMainWorld('electron', {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },
-  ports,
   nanoid,
 });

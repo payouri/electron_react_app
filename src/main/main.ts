@@ -8,13 +8,14 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import path from 'path';
+import { MessageBridgeHandler } from './lib/MessageBridge';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
 import {
+  CROSS_WINDOW_CHANNEL,
   IPCRouter,
   IPCScriptsRouter,
   IPC_ROUTER_CHANNEL,
@@ -22,7 +23,7 @@ import {
 } from './router';
 import { getSecondaryWindow } from './secondary';
 import { SecondaryWindowType } from './secondary/types';
-import { windowMessageBridge } from './lib/MessageBridge';
+import { resolveHtmlPath } from './util';
 
 class AppUpdater {
   constructor() {
@@ -32,11 +33,11 @@ class AppUpdater {
   }
 }
 
-let portsWereSet = false;
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on(IPC_SCRIPTS_CHANNEL, IPCScriptsRouter);
 ipcMain.on(IPC_ROUTER_CHANNEL, IPCRouter);
+ipcMain.on(CROSS_WINDOW_CHANNEL, MessageBridgeHandler);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -103,10 +104,6 @@ const createWindow = async () => {
     const secondaryWindow = await getSecondaryWindow(
       SecondaryWindowType.DEFAULT
     );
-
-    mainWindow.webContents.postMessage('message-bridge', null, [
-      windowMessageBridge.port1,
-    ]);
 
     secondaryWindow.show();
   });

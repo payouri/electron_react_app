@@ -1,23 +1,37 @@
 import { BrowserWindow, BrowserView, app } from 'electron';
 import path from 'path';
-// import { shell } from 'electron';
+import { WindowType } from './types';
 
+export * from './types';
 export { executeJavascript } from './helpers/executeJavascript';
 
 type ExtendedBrowserWindow = BrowserWindow & {
-  windowId: string;
+  windowType: WindowType;
 };
 
 const windows = new Map<string, ExtendedBrowserWindow>();
 
 const createBrowserWindow = ({
-  windowId,
+  windowType,
+  size = { width: 800, height: 600 },
+  autoShow = false,
 }: {
-  windowId: string;
+  autoShow?: boolean;
+  size?: { width: number; height: number };
+  windowType: WindowType;
 }): ExtendedBrowserWindow => {
-  // shell.openExternal(`https://explorer.helium.com/hotspots`);
-  path.join(process.cwd(), '/.erb/dll/preload.js');
+  const RESOURCES_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
+
+  const getAssetPath = (...paths: string[]): string => {
+    return path.join(RESOURCES_PATH, ...paths);
+  };
+
   const w = new BrowserWindow({
+    icon: getAssetPath('icon.png'),
+    width: size.width,
+    height: size.height,
     webPreferences: {
       allowRunningInsecureContent: false,
       preload: app.isPackaged
@@ -31,21 +45,27 @@ const createBrowserWindow = ({
   w.setContentProtection(false);
   w.setBrowserView(new BrowserView());
 
-  w.once('ready-to-show', () => {
-    w.show();
-  });
-
-  w.on('closed', () => {
-    windows.delete(windowId);
-  });
-
-  return Object.assign(w, { windowId });
-};
-
-export const getBrowserWindow = ({ windowId }: { windowId: string }) => {
-  if (!windows.has(windowId)) {
-    windows.set(windowId, createBrowserWindow({ windowId }));
+  if (autoShow) {
+    w.once('ready-to-show', () => {
+      w.show();
+    });
   }
 
-  return windows.get(windowId)!;
+  w.on('closed', () => {
+    windows.delete(windowType);
+  });
+
+  return Object.assign(w, { windowType });
+};
+
+export const getBrowserWindow = ({
+  windowType,
+}: {
+  windowType: WindowType;
+}) => {
+  if (!windows.has(windowType)) {
+    windows.set(windowType, createBrowserWindow({ windowType }));
+  }
+
+  return windows.get(windowType)!;
 };

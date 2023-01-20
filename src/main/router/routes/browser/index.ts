@@ -1,18 +1,13 @@
-import { getSecondaryWindow } from 'main/secondary';
-import { SecondaryWindowType } from 'main/secondary/types';
-import { getElementPickerScript } from '../../../injectApps/helpers/scripts';
-import { executeJavascript, getBrowserWindow } from '../../../lib/Browser';
+import {
+  executeJavascript,
+  getBrowserWindow,
+  WindowType,
+} from '../../../lib/Browser';
 import {
   IPCMessagePayload,
   IPCMessageType,
   IPCResponsePayload,
 } from '../../types';
-
-import { windowMessageBridge } from '../../../lib/MessageBridge';
-
-// const secondaryWindow = getSecondaryWindow(SecondaryWindowType.DEFAULT);
-
-// secondaryWindow.show();
 
 export const BrowserRoutes = {
   [IPCMessageType.OPEN_BROWSER]: async (
@@ -21,7 +16,7 @@ export const BrowserRoutes = {
     const { url, scriptsToRun, maximize } = payload;
 
     const browser = getBrowserWindow({
-      windowId: 'default',
+      windowType: WindowType.Browser,
     });
 
     if (maximize) {

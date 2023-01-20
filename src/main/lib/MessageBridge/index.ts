@@ -1,100 +1,67 @@
-import { MessageChannelMain, MessageEvent } from 'electron';
-import { nanoid } from 'nanoid';
+import { IpcMainEvent } from 'electron';
+import { CROSS_WINDOW_CHANNEL } from '../../router/constants';
+import { getSecondaryWindow, SecondaryWindowType } from '../../secondary';
+import { createTimeout } from '../../utils/Timeout';
+import { isValidCrossWindowMessage } from './helpers/isValidCrossWindowMessage';
+import { MessageType } from './types';
 
-const WindowMessageBridge = <
-  Message extends { type: string; payload: unknown }
->() => {
-  const state = {
-    initialized: false,
-  };
+const pendingRequests = new Map<
+  string,
+  { request: IpcMainEvent; timeout: ReturnType<typeof createTimeout> }
+>();
 
-  const { port1, port2 } = new MessageChannelMain({
-    // captureRejections: true,
-  });
+export const MessageBridgeHandler = async (
+  ipcEvent: Electron.IpcMainEvent,
+  messages: unknown[]
+) => {
+  const [message] = messages;
+  if (!isValidCrossWindowMessage(message)) {
+    ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
+      type: MessageType.ERROR,
+      error: {
+        message: 'Request timed out',
+        code: 'TIMEOUT',
+      },
+    });
+    return;
+  }
 
-  const generateMessageId = () => {
-    return nanoid();
-  };
-
-  port1.start();
-  port2.start();
-
-  state.initialized = true;
-
-  return {
-    // bindMainListener: (window: BrowserWindow) => {
-    //   if (!state.initialized) return;
-
-    //   window.webContents.on("", (message: MessageEvent) => {
-    //     port1.postMessage(message.data);
-    //   });
-    // },
-    // bindSecondaryListener: (window: BrowserWindow) => {
-    //   if (!state.initialized) return;
-
-    //   window.webContents.on('message', (message: MessageEvent) => {
-    //     port2.postMessage(message.data);
-    //   });
-    // },
-    mainSendMessage: () => {
-      const messageId = generateMessageId();
-
-      console.log('Sending message', messageId);
-
-      return new Promise((resolve) => {
-        const listener = (message: MessageEvent) => {
-          if (message.data.messageId !== messageId) return;
-
-          console.log('Received message', message);
-
-          resolve(message);
-          port1.off('message', listener);
-        };
-
-        port1.on('message', listener);
-
-        port1.postMessage({
-          type: 'message',
-          messageId,
-          payload: {
-            message: 'Hello from main process',
+  if (message.type === MessageType.REQUEST) {
+    const timeout = createTimeout({
+      timeoutMS: 5000,
+      onTimeout: () => {
+        pendingRequests.delete(message.requestId);
+        ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
+          type: MessageType.RESPONSE,
+          requestId: message.requestId,
+          hasFailed: true,
+          error: {
+            message: 'Request timed out',
+            code: 'TIMEOUT',
           },
         });
-      });
-    },
-    secondarySendMessage: () => {
-      const messageId = generateMessageId();
+      },
+    });
 
-      console.log('Sending message', messageId);
+    pendingRequests.set(message.requestId, {
+      timeout,
+      request: ipcEvent,
+    });
 
-      return new Promise((resolve) => {
-        const listener = (message: MessageEvent) => {
-          if (message.data.messageId !== messageId) return;
+    (await getSecondaryWindow(SecondaryWindowType.DEFAULT)).webContents.send(
+      CROSS_WINDOW_CHANNEL,
+      message
+    );
+  }
 
-          console.log('Received message', message);
-          resolve(message);
+  if (
+    message.type === MessageType.RESPONSE &&
+    pendingRequests.has(message.requestId)
+  ) {
+    const requestPending = pendingRequests.get(message.requestId)!;
 
-          port2.off('message', listener);
-        };
-
-        port2.on('message', listener);
-        port2.postMessage({
-          type: 'message',
-          messageId,
-          payload: {
-            message: 'Hello from main process',
-          },
-        });
-      });
-    },
-    destroy: () => {
-      port1.close();
-      port2.close();
-      state.initialized = false;
-    },
-    port1,
-    port2,
-  };
+    pendingRequests.delete(message.requestId);
+    requestPending.timeout.clear();
+    requestPending.request.reply(CROSS_WINDOW_CHANNEL, message);
+  }
 };
-
-export const windowMessageBridge = WindowMessageBridge();

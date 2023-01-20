@@ -1,11 +1,18 @@
-import { InjectedScripts } from 'main/injectApps/helpers/scripts/types';
+import { InjectedScripts } from '../injectApps/helpers/scripts/types';
 import { AppConfig } from '../config/types';
 import { Cart } from '../entities/Cart/Cart.types';
 import { Item } from '../entities/Item/Item.types';
 import { Tag } from '../entities/Tag/Tag.types';
-import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from './constants';
+import {
+  CROSS_WINDOW_CHANNEL,
+  IPC_ROUTER_CHANNEL,
+  IPC_SCRIPTS_CHANNEL,
+} from './constants';
 
-export type IPCChannel = typeof IPC_ROUTER_CHANNEL | typeof IPC_SCRIPTS_CHANNEL;
+export type IPCChannel =
+  | typeof IPC_ROUTER_CHANNEL
+  | typeof IPC_SCRIPTS_CHANNEL
+  | typeof CROSS_WINDOW_CHANNEL;
 
 type ListQuery = {
   start: number;
