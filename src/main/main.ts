@@ -101,6 +101,10 @@ const createWindow = async () => {
       mainWindow.show();
     }
 
+    console.log({
+      SecondaryWindowType,
+    });
+
     const secondaryWindow = await getSecondaryWindow(
       SecondaryWindowType.DEFAULT
     );

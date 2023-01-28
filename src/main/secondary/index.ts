@@ -1,7 +1,8 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import { BrowserWindow } from 'electron';
-import { getBrowserWindow, WindowType } from '../lib/Browser';
+import { WindowType } from '../lib/Browser/types';
+import { getBrowserWindow } from '../lib/Browser';
 import MenuBuilder from '../menu';
 import { resolveHtmlPath } from '../util';
 import { SecondaryWindowType } from './types';

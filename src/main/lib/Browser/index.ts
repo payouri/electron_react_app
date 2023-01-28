@@ -2,7 +2,6 @@ import { BrowserWindow, BrowserView, app } from 'electron';
 import path from 'path';
 import { WindowType } from './types';
 
-export * from './types';
 export { executeJavascript } from './helpers/executeJavascript';
 
 type ExtendedBrowserWindow = BrowserWindow & {

@@ -16,6 +16,7 @@ export const MessageBridgeHandler = async (
 ) => {
   const [message] = messages;
   if (!isValidCrossWindowMessage(message)) {
+    console.warn('Unknown IPC message type', message);
     ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
       type: MessageType.ERROR,
       error: {

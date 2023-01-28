@@ -30,9 +30,6 @@ export const ItemsRouter = ({
   const [createItemURL, setCreateItemURL] = useState<string>('');
   const { itemId } = useParams<{ itemId?: string }>();
 
-  console.log('ItemsRouter', items);
-  console.log('location', location);
-  console.log(name, itemId);
   const navigate = useNavigate();
 
   const handleOnCreateItem = () => {

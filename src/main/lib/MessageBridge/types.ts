@@ -1,4 +1,4 @@
-import { WindowType } from '../Browser';
+import { WindowType } from '../Browser/types';
 
 export enum MessageType {
   REQUEST = 'request',
@@ -15,22 +15,23 @@ export type SenderMessage<RequestType extends string, RequestPayload> = {
   payload: RequestPayload;
 };
 
+export type SuccessResponse<ResponsePayload> = {
+  hasFailed: false;
+  payload: ResponsePayload;
+};
+
+export type FailureResponse = {
+  hasFailed: true;
+  error: {
+    code: string;
+    reason: string;
+  };
+};
+
 export type RecipientResponse<MessagePayload> = {
   type: MessageType.RESPONSE;
   requestId: string;
-} & (
-  | {
-      hasFailed: false;
-      payload: MessagePayload;
-    }
-  | {
-      hasFailed: true;
-      error: {
-        code: string;
-        reason: string;
-      };
-    }
-);
+} & (SuccessResponse<MessagePayload> | FailureResponse);
 
 export type ErrorMessage = {
   type: MessageType.ERROR;

@@ -1,4 +1,4 @@
-import { IPC_ROUTER_CHANNEL, IPC_SCRIPTS_CHANNEL } from './constants';
+import { IPC_ROUTER_CHANNEL } from './constants';
 import { isKnownIPCMessageType } from './helpers/isKnownIPCMessageType';
 import { Routes } from './routes';
 import { MessageBridgeHandler } from './routes/bridge';

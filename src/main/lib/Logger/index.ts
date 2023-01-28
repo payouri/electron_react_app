@@ -1,5 +1,5 @@
 import path from 'path';
-import { createLogger, LeveledLogMethod, transports } from 'winston';
+import { createLogger, transports } from 'winston';
 
 const LOGS_DIR = path.join(process.cwd(), 'logs');
 

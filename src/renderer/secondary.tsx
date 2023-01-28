@@ -1,8 +1,11 @@
 import { createRoot } from 'react-dom/client';
-import { usePortMessaging } from './customHooks/usePortMessaging';
+import { useCrossWindowMessage } from './customHooks/useCrossWindowMessage';
+import { WindowType } from './customHooks/useCrossWindowMessage/types';
 
 const App = () => {
-  usePortMessaging();
+  useCrossWindowMessage({
+    windowType: WindowType.SECONDARY,
+  });
 
   return (
     <div>

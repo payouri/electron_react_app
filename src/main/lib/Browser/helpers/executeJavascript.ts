@@ -1,5 +1,5 @@
 import { WebContents } from 'electron';
-import { fileLogger } from '../../Logger';
+// import { fileLogger } from '../../Logger';
 import { CustomResult } from '../../../utils/types';
 
 export const executeJavascript = async <Result>(
@@ -14,7 +14,7 @@ export const executeJavascript = async <Result>(
       data: result,
     };
   } catch (error) {
-    fileLogger.error("Couldn't execute javascript", error);
+    console.error("Couldn't execute javascript", error);
 
     return {
       hasFailed: true,

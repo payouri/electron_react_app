@@ -16,7 +16,7 @@ export const isValidCrossWindowMessage = <
 
   return (
     'type' in message &&
-    message.type === 'string' &&
+    typeof message.type === 'string' &&
     Object.values(MessageType).includes(message.type as MessageType)
   );
 };
