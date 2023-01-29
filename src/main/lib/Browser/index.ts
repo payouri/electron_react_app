@@ -32,7 +32,9 @@ const createBrowserWindow = ({
     width: size.width,
     height: size.height,
     webPreferences: {
-      allowRunningInsecureContent: false,
+      // webSecurity: false,
+      // allowRunningInsecureContent: false,
+      // allowRunningInsecureContent: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(process.cwd(), '/.erb/dll/preload.js'),

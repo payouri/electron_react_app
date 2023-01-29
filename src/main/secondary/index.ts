@@ -31,6 +31,30 @@ export const getSecondaryWindow = async (
 
   secondaryWindow.loadURL(resolveHtmlPath('./secondary.html'));
 
+  secondaryWindow.webContents.session.webRequest.onHeadersReceived(
+    { urls: ['*://*/*'] },
+    (d, c) => {
+      if (d.responseHeaders?.['X-Frame-Options']) {
+        delete d.responseHeaders['X-Frame-Options'];
+      } else if (d.responseHeaders?.['x-frame-options']) {
+        delete d.responseHeaders['x-frame-options'];
+      }
+
+      if (!d.url.startsWith('http://localhost')) {
+        console.log({
+          'd.responseHeaders': d.responseHeaders,
+        });
+      }
+
+      c({
+        cancel: false,
+        responseHeaders: {
+          ...d.responseHeaders,
+        },
+      });
+    }
+  );
+
   const menuBuilder = new MenuBuilder(secondaryWindow);
   menuBuilder.buildMenu();
   secondaryWindowsMap.set(type, secondaryWindow);

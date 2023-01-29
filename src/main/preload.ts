@@ -1,7 +1,12 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { nanoid } from 'nanoid';
 import { initInjectedApps } from './injectApps';
-import { RecipientResponse, SenderMessage } from './lib/MessageBridge/types';
+import {
+  ErrorMessage,
+  MessageType,
+  RecipientResponse,
+  SenderMessage,
+} from './lib/MessageBridge/types';
 import { CROSS_WINDOW_CHANNEL } from './router/constants';
 import { IPCChannel } from './router/types';
 
@@ -14,18 +19,22 @@ contextBridge.exposeInMainWorld('electron', {
     sendCrossWindowRequest(
       arg: SenderMessage<string, unknown>
     ): Promise<RecipientResponse<unknown>> {
-      const promise = new Promise<RecipientResponse<unknown>>((resolve) => {
-        const handler = (
-          _event: IpcRendererEvent,
-          response: /* RecipientResponse<unknown> */ any
-        ) => {
-          if (response.requestId === arg.requestId) {
-            ipcRenderer.removeListener(CROSS_WINDOW_CHANNEL, handler);
-            resolve(response);
-          }
-        };
-        ipcRenderer.on(CROSS_WINDOW_CHANNEL, handler);
-      });
+      const promise = new Promise<RecipientResponse<unknown>>(
+        (resolve, reject) => {
+          const handler = (
+            _event: IpcRendererEvent,
+            response: RecipientResponse<unknown> | ErrorMessage
+          ) => {
+            if (response.type === MessageType.ERROR) {
+              reject(response);
+            } else if (response.requestId === arg.requestId) {
+              ipcRenderer.removeListener(CROSS_WINDOW_CHANNEL, handler);
+              resolve(response);
+            }
+          };
+          ipcRenderer.on(CROSS_WINDOW_CHANNEL, handler);
+        }
+      );
       ipcRenderer.send(CROSS_WINDOW_CHANNEL, [arg]);
       return promise;
     },

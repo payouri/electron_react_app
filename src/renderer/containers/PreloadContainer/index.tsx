@@ -13,7 +13,7 @@ export const PreloadContainer = () => {
   } = useTheme();
 
   return isLoading || !hasInit ? (
-    <PageContainer>
+    <PageContainer direction="row">
       <Loader fillSpace color={gray40} size="4rem" />
     </PageContainer>
   ) : (

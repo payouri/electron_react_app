@@ -1,8 +1,10 @@
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
-export const PageContainer = styled.div`
+export const PageContainer = styled.div<{
+  direction: Required<CSSProperties>['flexDirection'];
+}>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ direction }) => direction};
   min-height: 100vh;
   width: 100%;
   gap: ${({ theme }) => theme.gap[16]};
