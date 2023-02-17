@@ -26,7 +26,7 @@ export const MainContainer = () => {
       senderType: WindowType.MAIN,
       recipientType: WindowType.SECONDARY,
     })
-      .then(console.log)
+      .then((...args) => console.log('response', ...args))
       .catch(console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

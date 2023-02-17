@@ -31,6 +31,26 @@ export const getSecondaryWindow = async (
 
   secondaryWindow.loadURL(resolveHtmlPath('./secondary.html'));
 
+  secondaryWindow.webContents.session.webRequest.onBeforeRequest(
+    (details, callback) => {
+      // console.log(details.url);
+      if (
+        details.url.startsWith('http') &&
+        !details.url.startsWith('http://localhost') &&
+        !details.url.startsWith('https://localhost')
+      ) {
+        callback({
+          cancel: false,
+          redirectURL: `http://localhost:9999/proxy/${details.url}`,
+        });
+      } else {
+        callback({
+          cancel: false,
+        });
+      }
+    }
+  );
+
   secondaryWindow.webContents.session.webRequest.onHeadersReceived(
     { urls: ['*://*/*'] },
     (d, c) => {

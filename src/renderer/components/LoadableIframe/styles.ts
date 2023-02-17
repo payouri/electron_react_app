@@ -1,11 +1,11 @@
 import styled, { CSSProperties } from 'styled-components';
 
-// export const Iframe = styled.webview`
-//   /* width: 100%;
-//   height: 100%; */
-//   display: block;
-//   border: none;
-// `;
+export const Iframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+`;
 
 export const IframeContainer = styled.div<{
   flex: CSSProperties['flex'];
