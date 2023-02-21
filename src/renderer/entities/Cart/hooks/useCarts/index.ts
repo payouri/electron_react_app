@@ -1,3 +1,4 @@
+import { Item } from 'main/entities/Item/Item.types';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useInjectReducer } from 'redux-injectors';
@@ -43,6 +44,66 @@ export const useCarts = (): UseCartsReturnType => {
     );
   };
 
+  const createCart = async (name: string) => {
+    const response = await sendMessage({
+      type: MessageType.CREATE_CART,
+      payload: {
+        name,
+        items: [],
+      },
+    });
+
+    dispatch(actions.pushCarts([response]));
+
+    return response;
+  };
+
+  const updateCart = async (cartId: string, name: string) => {
+    const response = await sendMessage({
+      type: MessageType.UPDATE_CART,
+      payload: {
+        _id: cartId,
+        data: {
+          name,
+        },
+      },
+    });
+
+    return response;
+  };
+
+  const deleteCart = async (cartId: string) => {
+    await sendMessage({
+      type: MessageType.DELETE_CART,
+      payload: {
+        _id: cartId,
+      },
+    });
+  };
+
+  const getCartById = async (cartId: string) => {
+    const response = await sendMessage({
+      type: MessageType.GET_CART,
+      payload: {
+        _id: cartId,
+      },
+    });
+
+    return response;
+  };
+
+  const addItems = async (cartId: string, items: Item[]) => {
+    const response = await sendMessage({
+      type: MessageType.ADD_ITEMS_TO_CART,
+      payload: {
+        _id: cartId,
+        items,
+      },
+    });
+
+    dispatch(actions.upsertCarts([response]));
+  };
+
   useEffect(() => {
     if (state.carts.length === 0) {
       loadMore();
@@ -53,5 +114,10 @@ export const useCarts = (): UseCartsReturnType => {
   return {
     ...state,
     loadMore,
+    createCart,
+    updateCart,
+    deleteCart,
+    getCart: getCartById,
+    addItemsToCart: addItems,
   };
 };

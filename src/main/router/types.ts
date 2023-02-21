@@ -40,6 +40,7 @@ export enum IPCMessageType {
   CREATE_CART = 'CREATE_CART',
   UPDATE_CART = 'UPDATE_CART',
   DELETE_CART = 'DELETE_CART',
+  ADD_ITEMS_TO_CART = 'ADD_ITEMS_TO_CART',
 }
 
 export type IPCMessagePayload = {
@@ -56,7 +57,7 @@ export type IPCMessagePayload = {
   [IPCMessageType.CREATE_ITEM]: Omit<Item, '_id'>;
   [IPCMessageType.UPDATE_ITEM]: {
     _id: string;
-    data: Omit<Item, '_id'>;
+    data: Partial<Omit<Item, '_id'>>;
   };
   [IPCMessageType.DELETE_ITEM]: {
     _id: string;
@@ -68,7 +69,7 @@ export type IPCMessagePayload = {
   [IPCMessageType.CREATE_TAG]: Omit<Tag, '_id'>;
   [IPCMessageType.UPDATE_TAG]: {
     _id: string;
-    data: Omit<Tag, '_id'>;
+    data: Partial<Omit<Tag, '_id'>>;
   };
   [IPCMessageType.DELETE_TAG]: {
     _id: string;
@@ -80,10 +81,14 @@ export type IPCMessagePayload = {
   [IPCMessageType.CREATE_CART]: Omit<Cart, '_id'>;
   [IPCMessageType.UPDATE_CART]: {
     _id: string;
-    data: Omit<Cart, '_id'>;
+    data: Partial<Omit<Cart, '_id'>>;
   };
   [IPCMessageType.DELETE_CART]: {
     _id: string;
+  };
+  [IPCMessageType.ADD_ITEMS_TO_CART]: {
+    _id: string;
+    items: Item[];
   };
   [IPCMessageType.OPEN_BROWSER]: {
     url: string;
@@ -112,6 +117,7 @@ export type IPCResponsePayload = {
   [IPCMessageType.CREATE_CART]: Cart;
   [IPCMessageType.UPDATE_CART]: Cart;
   [IPCMessageType.DELETE_CART]: void;
+  [IPCMessageType.ADD_ITEMS_TO_CART]: Cart;
   [IPCMessageType.OPEN_BROWSER]: void;
 };
 

@@ -1,3 +1,4 @@
+import { Item } from 'main/entities/Item/Item.types';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useInjectReducer } from 'redux-injectors';
@@ -15,6 +16,31 @@ export const useItems = (): UseItemsReturnType => {
 
   const state = useSelector(selectItemsState);
   const dispatch = useDispatch();
+
+  const createItem = async (param: Omit<Item, '_id'>) => {
+    const response = await sendMessage({
+      type: MessageType.CREATE_ITEM,
+      payload: param,
+    });
+
+    dispatch(actions.pushItems([response]));
+
+    return response;
+  };
+
+  const updateItem = async ({ _id, ...item }: Item) => {
+    const response = await sendMessage({
+      type: MessageType.UPDATE_ITEM,
+      payload: {
+        _id,
+        data: item,
+      },
+    });
+
+    dispatch(actions.updateItem(response));
+
+    return response;
+  };
 
   const loadMore = async () => {
     const { start, hasMore, loading } = state;
@@ -53,5 +79,7 @@ export const useItems = (): UseItemsReturnType => {
   return {
     ...state,
     loadMore,
+    createItem,
+    updateItem,
   };
 };

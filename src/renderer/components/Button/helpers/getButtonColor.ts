@@ -1,24 +1,31 @@
-import { DefaultTheme } from 'styled-components';
+import { css } from 'styled-components';
 import { ButtonColor } from '../types';
 
-export const getButtonColor = (
-  theme: DefaultTheme,
-  color: ButtonColor
-): { backgroundColor: string; color: string } => {
+export const getButtonColor = ({
+  color,
+  disabled,
+  loading = false,
+}: {
+  color: ButtonColor;
+  disabled?: boolean;
+  loading?: boolean;
+}) => {
   switch (color) {
     case 'transparent':
-      return {
-        backgroundColor: 'transparent',
-        color: theme.grayscale[10],
-      };
+      return css`
+        background-color: transparent;
+        color: ${({ theme }) =>
+          loading || disabled ? theme.grayscale[50] : theme.grayscale[10]};
+      `;
     case 'primary':
     case 'secondary':
     case 'tertiary':
     case 'colorless':
     default:
-      return {
-        backgroundColor: theme.grayscale[140],
-        color: theme.grayscale[10],
-      };
+      return css`
+        background-color: ${({ theme }) => theme.grayscale[10]};
+        color: ${({ theme }) =>
+          loading || disabled ? theme.grayscale[130] : theme.grayscale[140]};
+      `;
   }
 };

@@ -13,23 +13,23 @@ export const MainContainer = () => {
   const { currentNavigationEntry, goTo, location, navigationMap } =
     useAppNavigation();
 
-  const { sendMessage } = useCrossWindowMessage({
-    windowType: WindowType.MAIN,
-  });
+  // const { sendMessage } = useCrossWindowMessage({
+  //   windowType: WindowType.MAIN,
+  // });
 
-  useEffect(() => {
-    sendMessage({
-      requestType: 'test',
-      payload: {
-        test: 'test',
-      },
-      senderType: WindowType.MAIN,
-      recipientType: WindowType.SECONDARY,
-    })
-      .then((...args) => console.log('response', ...args))
-      .catch(console.error);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   sendMessage({
+  //     requestType: 'test',
+  //     payload: {
+  //       test: 'test',
+  //     },
+  //     senderType: WindowType.MAIN,
+  //     recipientType: WindowType.SECONDARY,
+  //   })
+  //     .then((...args) => console.log('response', ...args))
+  //     .catch(console.error);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <PageContainer>

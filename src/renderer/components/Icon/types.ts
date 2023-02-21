@@ -1,4 +1,5 @@
 import { IconProps as UnIconProps } from '@iconscout/react-unicons';
+import { CSSProperties } from 'styled-components';
 import { IconMap } from './constants';
 
 export enum IconSize {
@@ -11,5 +12,5 @@ export type IconName = keyof typeof IconMap;
 
 export type IconProps = {
   name: IconName;
-  size?: IconSize;
+  size?: IconSize | Omit<CSSProperties['width'], IconSize>;
 } & Omit<UnIconProps, 'size'>;

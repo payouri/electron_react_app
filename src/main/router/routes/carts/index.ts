@@ -73,4 +73,26 @@ export const CartRoutes = {
 
     await collection.unset(_id);
   },
+  [IPCMessageType.ADD_ITEMS_TO_CART]: async (
+    payload: IPCMessagePayload[IPCMessageType.ADD_ITEMS_TO_CART]
+  ): Promise<IPCResponsePayload[IPCMessageType.ADD_ITEMS_TO_CART]> => {
+    const { _id, items } = payload;
+
+    const collection = await getCartCollection();
+
+    const cart = await collection.get(_id);
+
+    if (!cart) {
+      throw new Error(`Cart with _id ${_id} not found`);
+    }
+
+    const updatedCart = {
+      ...cart,
+      items: [...cart.items, ...items],
+    };
+
+    await collection.set(_id, updatedCart);
+
+    return updatedCart;
+  },
 } as const;

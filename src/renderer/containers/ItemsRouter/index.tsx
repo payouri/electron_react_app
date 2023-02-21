@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Item } from 'main/entities/Item/Item.types';
 import { useEffect, useState } from 'react';
 import {
   Route,
@@ -7,28 +8,92 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { Button } from 'renderer/components/Button';
+import { Modal } from 'renderer/components/Modal';
 import {
   NavigationDescriptor,
   NavigationEntry,
 } from 'renderer/customHooks/useAppNavigation/types';
+import { usePortal } from 'renderer/customHooks/usePortal';
+import { useCarts } from 'renderer/entities/Cart/hooks/useCarts';
 import { useItems } from 'renderer/entities/Item/hooks/useItems';
 import { MessageType, sendMessage } from 'renderer/services';
+import { ItemForm } from './components/ItemForm';
 import { ItemGrid } from './components/ItemGrid';
 import { MainItemsContainer } from './styles';
 
 export const ItemsRouter = ({
   label,
   mountPoint,
-  name,
 }: {
   name: NavigationEntry;
 } & NavigationDescriptor) => {
-  const { loading, items, hasMore, loadMore, start } = useItems();
+  const { loading, items, hasMore, loadMore, start, createItem, updateItem } =
+    useItems();
+  const { addItemsToCart, carts } = useCarts();
   const location = useLocation();
   const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<
+    { isEditing: false } | { isEditing: true; item: Item }
+  >({
+    isEditing: false,
+  });
   const [createItemURL, setCreateItemURL] = useState<string>('');
   const { itemId } = useParams<{ itemId?: string }>();
+
+  const CreateItemModal = usePortal({
+    id: 'create-item-modal',
+    children: (
+      <Modal
+        open={isCreating}
+        onClose={() => {
+          setIsCreating(false);
+        }}
+        title="Create Item"
+      >
+        <ItemForm
+          onSubmit={async (data) => {
+            console.log(await createItem(data));
+            setIsCreating(false);
+          }}
+        />
+      </Modal>
+    ),
+    mountNode: document.body,
+  });
+
+  const EditItemModal = usePortal({
+    id: 'edit-item-modal',
+    children: (
+      <Modal
+        open={isEditing.isEditing}
+        onClose={() => {
+          setIsEditing({
+            isEditing: false,
+          });
+        }}
+        title="Edit Item"
+      >
+        <ItemForm
+          item={isEditing.isEditing ? isEditing.item : undefined}
+          onSubmit={async (data) => {
+            if (!isEditing.isEditing) return;
+
+            const { _id } = isEditing.item;
+
+            await updateItem({
+              _id,
+              ...data,
+            });
+
+            setIsEditing({
+              isEditing: false,
+            });
+          }}
+        />
+      </Modal>
+    ),
+    mountNode: document.body,
+  });
 
   const navigate = useNavigate();
 
@@ -36,6 +101,21 @@ export const ItemsRouter = ({
     if (!isCreating) {
       setIsCreating(true);
     }
+  };
+
+  const handleOnEditItem = (item: Item) => {
+    setIsEditing({
+      isEditing: true,
+      item,
+    });
+  };
+
+  const handleAddToCart = async (cartId: string, item: Item) => {
+    console.log({
+      cartId,
+      item,
+    });
+    await addItemsToCart(cartId, [item]);
   };
 
   const handleSubmit = () => {
@@ -64,7 +144,7 @@ export const ItemsRouter = ({
   return (
     <MainItemsContainer>
       <h1>{label}</h1>
-      {isCreating && (
+      {/* {isCreating && (
         <div>
           <input
             type="url"
@@ -77,7 +157,7 @@ export const ItemsRouter = ({
             0
           </Button>
         </div>
-      )}
+      )} */}
       <Routes>
         <Route
           index
@@ -87,6 +167,8 @@ export const ItemsRouter = ({
               loading={loading}
               loadMore={loadMore}
               onCreateItem={handleOnCreateItem}
+              onEditItem={handleOnEditItem}
+              onAddToCart={handleAddToCart}
             />
           }
         />
@@ -106,10 +188,14 @@ export const ItemsRouter = ({
               loading={loading}
               loadMore={loadMore}
               onCreateItem={handleOnCreateItem}
+              onEditItem={handleOnEditItem}
+              onAddToCart={handleAddToCart}
             />
           }
         />
       </Routes>
+      {CreateItemModal}
+      {EditItemModal}
     </MainItemsContainer>
   );
 };

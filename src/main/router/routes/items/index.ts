@@ -43,6 +43,8 @@ export const ItemRoutes = {
 
     await collection.set(item._id, item);
 
+    collection.emit('itemAdded', item);
+
     return item;
   },
   [IPCMessageType.UPDATE_ITEM]: async (
@@ -60,7 +62,11 @@ export const ItemRoutes = {
 
     const updatedItem = { ...item, ...data };
 
-    await collection.set(_id, updatedItem);
+    const result = await collection.set(_id, updatedItem);
+
+    if (result) {
+      collection.emit('itemUpdated', updatedItem);
+    }
 
     return updatedItem;
   },
@@ -71,6 +77,16 @@ export const ItemRoutes = {
 
     const collection = await getItemCollection();
 
-    await collection.unset(_id);
+    const item = await collection.get(_id);
+
+    if (!item) {
+      return;
+    }
+
+    const result = await collection.unset(_id);
+
+    if (result) {
+      collection.emit('itemRemoved', item);
+    }
   },
 } as const;

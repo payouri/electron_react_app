@@ -13,6 +13,12 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 import path from 'path';
+import {
+  getCartCollection,
+  getItemCollection,
+  getTagCollection,
+  runSideEffects,
+} from './entities';
 import { MessageBridgeHandler } from './lib/MessageBridge';
 import MenuBuilder from './menu';
 import {
@@ -102,15 +108,15 @@ const createWindow = async () => {
       mainWindow.show();
     }
 
-    console.log({
-      SecondaryWindowType,
-    });
+    // console.log({
+    //   SecondaryWindowType,
+    // });
 
-    const secondaryWindow = await getSecondaryWindow(
-      SecondaryWindowType.DEFAULT
-    );
+    // const secondaryWindow = await getSecondaryWindow(
+    //   SecondaryWindowType.DEFAULT
+    // );
 
-    secondaryWindow.show();
+    // secondaryWindow.show();
   });
 
   mainWindow.on('closed', () => {
@@ -147,9 +153,20 @@ app
   .whenReady()
   .then(async () => {
     const args = path.join(__dirname, 'preload.js');
+    const [cartCollection, itemCollection, tagCollection] = await Promise.all([
+      getCartCollection(),
+      getItemCollection(),
+      getTagCollection(),
+    ]);
+    runSideEffects({
+      cartCollection,
+      itemCollection,
+      tagCollection,
+    });
+
     await Promise.all([
       createWindow(),
-      ...(app.isPackaged ? [spawn('node', args)] : []),
+      ...(app.isPackaged ? [spawn('node', [args])] : []),
     ]);
     app.on('activate', async () => {
       // On macOS it's common to re-create a window in the app when the

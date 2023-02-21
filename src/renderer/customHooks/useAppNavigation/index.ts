@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getNavigationMap } from './helpers/getNavigationMap';
 import { UseAppNavigation } from './types';
@@ -9,15 +10,31 @@ export const useAppNavigation: UseAppNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const navigationMap = getNavigationMap();
+  const matchFunctions = useMemo(
+    () =>
+      Object.entries(navigationMap).reduce<Record<string, RegExp>>(
+        (acc, [key, value]) => {
+          if (value.exactPath) return acc;
 
-  const currentNavigationEntry = Object.values(navigationMap).find(
-    (navigationEntry) => {
+          return {
+            ...acc,
+            [key]: new RegExp(value.mountPoint.replace(/\*/g, '.+')),
+          };
+        },
+        {}
+      ),
+    []
+  );
+
+  const [, currentNavigationEntry] =
+    Object.entries(navigationMap).find(([key, navigationEntry]) => {
       const { exactPath, mountPoint } = navigationEntry;
+
       return exactPath
         ? location.pathname === mountPoint
-        : location.pathname.startsWith(mountPoint);
-    }
-  );
+        : location.pathname !== '/' &&
+            matchFunctions[key].test(location.pathname);
+    }) || [];
 
   return {
     navigationMap,

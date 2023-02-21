@@ -5,4 +5,6 @@ export type ItemGridProps = {
   loading: boolean;
   loadMore: () => void;
   onCreateItem: () => void;
+  onEditItem: (item: Item) => void;
+  onAddToCart: (cartId: string, item: Item) => void;
 };

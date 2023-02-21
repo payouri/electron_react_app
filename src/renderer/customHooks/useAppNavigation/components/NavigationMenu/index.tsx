@@ -11,11 +11,12 @@ export const NavigationMenu = ({
     <MenuContainer>
       {navigationEntries.map(([entryName, entryData]) => (
         <NavigationButton
+          size="medium"
           color="colorless"
-          active={currentNavigationEntry?.mountPoint === entryData.mountPoint}
+          active={currentNavigationEntry?.name === entryName}
           key={`${entryData.mountPoint}/${entryData.label}`}
           onClick={() => {
-            if (location.pathname !== entryData.mountPoint) goTo(entryName);
+            if (currentNavigationEntry?.name !== entryName) goTo(entryName);
           }}
           prependIcon={entryData.icon}
         >

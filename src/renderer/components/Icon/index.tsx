@@ -4,6 +4,9 @@ import { getIconSize } from './helpers/getIconSize';
 import { IconWrapper } from './styles';
 import { IconProps, IconSize } from './types';
 
+export { IconSize } from './types';
+export type { IconProps };
+
 export const Icon = ({
   name,
   size = IconSize.MEDIUM,

@@ -1,24 +1,37 @@
 import styled from 'styled-components';
 import { getButtonColor } from './helpers/getButtonColor';
+import { getButtonStyleFromSize } from './helpers/getButtonStyleFromSize';
 import { ButtonProps } from './types';
 
-type StyledButtonProps = Pick<ButtonProps, 'block' | 'color' | 'disabled'>;
+type StyledButtonProps = Pick<
+  ButtonProps,
+  'size' | 'block' | 'color' | 'disabled' | 'loading'
+>;
 
 export const StyledButton = styled.button<StyledButtonProps>`
+  align-items: center;
+  border-radius: ${({ theme }) => theme.borderRadius.button};
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: ${({ theme }) => theme.gap[8]};
-  width: ${({ block }) => (block ? '100%' : 'auto')};
   flex: ${({ block }) => (block ? 1 : 0)};
-  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  font-size: ${({ theme }) => theme.textSize.md};
+  font-weight: 500;
+  gap: ${({ theme }) => theme.gap[12]};
+  line-height: 1;
+  transition: transform 0.2s ease-in-out;
   white-space: nowrap;
-  ${({ theme, color }) => {
-    const { backgroundColor, color: textColor } = getButtonColor(theme, color);
-    return `
-      background-color: ${backgroundColor};
-      color: ${textColor};
-    `;
-  }};
+  width: ${({ block }) => (block ? '100%' : 'auto')};
+  ${getButtonColor};
+  ${getButtonStyleFromSize}
+  &:hover {
+    transform: ${({ disabled, loading }) =>
+      disabled || loading ? 'none' : 'scale(1.0125)'};
+  }
+  &:active {
+    transform: ${({ disabled, loading }) =>
+      disabled || loading ? 'none' : 'scale(0.95, 0.90)'};
+  }
+  :focus {
+    outline: 2px solid cornflowerblue;
+  }
 `;

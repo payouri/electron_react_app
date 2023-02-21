@@ -7,9 +7,12 @@ export type ButtonColor =
   | 'colorless'
   | 'transparent';
 
+export type ButtonSize = 'small' | 'medium' | 'large';
+
 export type ButtonProps = PropsWithChildren<
   HTMLAttributes<HTMLButtonElement> & {
     color: ButtonColor;
+    size: ButtonSize;
     disabled?: boolean;
     block?: boolean;
     prependIcon?: React.ReactNode;
@@ -17,3 +20,5 @@ export type ButtonProps = PropsWithChildren<
     loading?: boolean;
   }
 >;
+
+export type ButtonComponent = React.FC<ButtonProps>;

@@ -12,12 +12,13 @@ export type NavigationDescriptor = {
   mountPoint: string;
   exactPath: boolean;
   icon: JSX.Element;
+  name: NavigationEntry;
 } & (
   | {
       element: JSX.Element;
     }
   | {
-      component: FC<NavigationDescriptor & { name: NavigationEntry }>;
+      component: FC<NavigationDescriptor>;
     }
 );
 

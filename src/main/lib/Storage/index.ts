@@ -1,3 +1,4 @@
+import { TypedEmitter } from 'tiny-typed-emitter';
 import { createDBStorage } from './DbStorage';
 import { createFileStorage } from './FileStorage';
 import { StorageType } from './interfaces';
@@ -46,14 +47,28 @@ export async function createStorage<T extends Record<string, unknown>>(
     });
     if (existingStorage) return existingStorage as StorageTypeMap<T>['DB'];
 
-    const newStorage = await createDBStorage<T>({
-      ...params,
-      name,
-      type: storageType,
-      validator,
-    });
+    const emitter = new TypedEmitter<{
+      itemAdded: (item: T) => void;
+      itemUpdated: (item: T) => void;
+      itemRemoved: (item: T) => void;
+    }>();
+
+    const newStorage = Object.assign(
+      await createDBStorage<T>({
+        ...params,
+        name,
+        type: storageType,
+        validator,
+      }),
+      {
+        emit: emitter.emit.bind(emitter),
+        on: emitter.on.bind(emitter),
+        off: emitter.off.bind(emitter),
+      }
+    );
 
     setStorage(newStorage);
+
     return newStorage;
   }
   throw new Error(`Unknown storage type: ${storageType}`);

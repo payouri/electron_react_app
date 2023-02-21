@@ -12,7 +12,7 @@ const createDBStorage = async <T extends Record<string, unknown>>({
   frestStart,
 }: Omit<
   DbStorageAPI<T>,
-  'get' | 'set' | 'query' | 'generateId' | 'unset'
+  'get' | 'set' | 'query' | 'generateId' | 'unset' | 'on' | 'off' | 'emit'
 >): Promise<DbStorageAPI<T>> => {
   const localDb = getLocalDb();
 

@@ -1,14 +1,24 @@
 import { DefaultTheme } from 'styled-components';
 
+const LineHeight = 1.57;
+
 export const theme: DefaultTheme = {
+  lineHeight: LineHeight,
   colors: {
     primary: '#0070f3',
     secondary: '#ff6600',
   },
+  outline: {
+    focus: '2px solid cornflowerblue',
+  },
   iconSize: {
-    sm: '0.875rem',
-    md: '1.5rem',
-    lg: '2.25rem',
+    xs: `${0.75 * LineHeight}rem`,
+    sm: `${0.875 * LineHeight}rem`,
+    md: `${1 * LineHeight}rem`,
+    lg: `${1.125 * LineHeight}rem`,
+    xl: `${1.25 * LineHeight}rem`,
+    xxl: `${1.75 * LineHeight}rem`,
+    xxxl: `${3 * LineHeight}rem`,
   },
   titleSize: {
     sm: '1.25rem',
@@ -54,5 +64,46 @@ export const theme: DefaultTheme = {
     48: '3rem',
     56: '3.5rem',
     64: '4rem',
+  },
+  boxShadow: {
+    elevation: {
+      0: 'none',
+      1: '0px 1px 2px rgba(0, 0, 0, 0.05), 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.06)',
+      2: '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 2px 2px rgba(0, 0, 0, 0.05)',
+      3: '0px 1px 5px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.04), 0px 3px 1px -2px rgba(0, 0, 0, 0.06)',
+      4: '0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 5px 0px rgba(0, 0, 0, 0.05), 0px 1px 10px 0px rgba(0, 0, 0, 0.04)',
+      5: '0px 3px 5px -1px rgba(0, 0, 0, 0.05), 0px 5px 8px 0px rgba(0, 0, 0, 0.04), 0px 1px 14px 0px rgba(0, 0, 0, 0.02)',
+      6: '0px 3px 5px -1px rgba(0, 0, 0, 0.05), 0px 6px 10px 0px rgba(0, 0, 0, 0.04), 0px 1px 18px 0px rgba(0, 0, 0, 0.02)',
+      7: '0px 4px 5px -2px rgba(0, 0, 0, 0.04), 0px 7px 10px 1px rgba(0, 0, 0, 0.04), 0px 2px 16px 1px rgba(0, 0, 0, 0.02)',
+      8: '0px 5px 5px -3px rgba(0, 0, 0, 0.04), 0px 8px 10px 1px rgba(0, 0, 0, 0.04), 0px 3px 14px 2px rgba(0, 0, 0, 0.02)',
+      9: '0px 5px 6px -3px rgba(0, 0, 0, 0.04), 0px 9px 12px 1px rgba(0, 0, 0, 0.04), 0px 3px 16px 2px rgba(0, 0, 0, 0.02)',
+      10: '0px 6px 6px -3px rgba(0, 0, 0, 0.04), 0px 10px 14px 1px rgba(0, 0, 0, 0.04), 0px 4px 18px 3px rgba(0, 0, 0, 0.02)',
+      11: '0px 6px 7px -4px rgba(0, 0, 0, 0.04), 0px 11px 15px 1px rgba(0, 0, 0, 0.04), 0px 4px 20px 3px rgba(0, 0, 0, 0.02)',
+      12: '0px 7px 8px -4px rgba(0, 0, 0, 0.04), 0px 12px 17px 2px rgba(0, 0, 0, 0.04), 0px 5px 22px 4px rgba(0, 0, 0, 0.02)',
+    },
+  },
+  elevationLevel: {
+    0: 0,
+    1: 1,
+    2: 10,
+    3: 100,
+    4: 1_000,
+    5: 10_000,
+    6: 100_000,
+    7: 1_000_000,
+    8: 10_000_000,
+    9: 100_000_000,
+    10: 1_000_000_000,
+    max: 2_147_483_647,
+  },
+  borderRadius: {
+    none: 'unset',
+    sm: '0.125rem',
+    md: '0.25rem',
+    lg: '0.5rem',
+    rounded: '50%',
+    button: '0.25rem',
+    card: '0.25rem',
+    input: '0.25rem',
   },
 };

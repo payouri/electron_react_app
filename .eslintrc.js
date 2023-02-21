@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'erb',
+  extends: ['erb', 'plugin:storybook/recommended'],
   rules: {
     // A temporary hack related to IDE not resolving correct package.json
     'import/no-extraneous-dependencies': 'off',
@@ -9,26 +9,26 @@ module.exports = {
     'import/prefer-default-export': ['off'],
     'import/no-default-export': ['error'],
     '@typescript-eslint/naming-convention': ['off'],
-    'no-underscore-dangle': ['off'],
+    'no-underscore-dangle': ['off']
   },
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
-    createDefaultProgram: true,
+    createDefaultProgram: true
   },
   settings: {
     'import/resolver': {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
       webpack: {
-        config: require.resolve('./.erb/configs/webpack.config.eslint.ts'),
+        config: require.resolve('./.erb/configs/webpack.config.eslint.ts')
       },
-      typescript: {},
+      typescript: {}
     },
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
-  },
+      '@typescript-eslint/parser': ['.ts', '.tsx']
+    }
+  }
 };
