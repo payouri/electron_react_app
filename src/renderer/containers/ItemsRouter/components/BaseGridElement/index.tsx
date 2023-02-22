@@ -11,11 +11,11 @@ const OuterNode = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.gap[12]};
-  box-shadow: ${({ theme }) => theme.boxShadow.elevation[1]};
-  &:hover {
-    box-shadow: ${({ theme }) => theme.boxShadow.elevation[5]};
-  }
   transition: box-shadow 0.2s ease-in-out;
+  box-shadow: ${({ theme }) => theme.boxShadow.elevation[10]};
+  &:hover {
+    box-shadow: ${({ theme }) => theme.boxShadow.elevation[3]};
+  }
 `;
 
 const BodyWrapper = styled.div`

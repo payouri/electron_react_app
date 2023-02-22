@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { Location } from 'react-router-dom';
 
 export enum NavigationEntry {
@@ -11,8 +11,10 @@ export type NavigationDescriptor = {
   label: string;
   mountPoint: string;
   exactPath: boolean;
-  icon: JSX.Element;
+  icon: JSX.Element | FC<NavigationDescriptor>;
   name: NavigationEntry;
+  subNavigation?: NavigationDescriptor[];
+  sideMenu?: FC<NavigationDescriptor> | ReactNode;
 } & (
   | {
       element: JSX.Element;

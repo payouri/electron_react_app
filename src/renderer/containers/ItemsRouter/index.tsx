@@ -14,6 +14,7 @@ import {
   NavigationEntry,
 } from 'renderer/customHooks/useAppNavigation/types';
 import { usePortal } from 'renderer/customHooks/usePortal';
+import { useTransitionOrchestrator } from 'renderer/customHooks/useTransitionOrchestrator';
 import { useCarts } from 'renderer/entities/Cart/hooks/useCarts';
 import { useItems } from 'renderer/entities/Item/hooks/useItems';
 import { MessageType, sendMessage } from 'renderer/services';
@@ -39,6 +40,9 @@ export const ItemsRouter = ({
   });
   const [createItemURL, setCreateItemURL] = useState<string>('');
   const { itemId } = useParams<{ itemId?: string }>();
+  const { updateElementStyle, resetElementStyle } = useTransitionOrchestrator({
+    defaultTransition: 'all 400ms cubic-bezier(0.25, 0.8, 0.25, 1)',
+  });
 
   const CreateItemModal = usePortal({
     id: 'create-item-modal',
@@ -138,6 +142,14 @@ export const ItemsRouter = ({
   useEffect(() => {
     if (!isCreating && createItemURL) {
       setCreateItemURL('');
+    }
+    if (isCreating) {
+      updateElementStyle('main-container', {
+        transform: 'scale(1.2)',
+        filter: 'blur(10px)',
+      });
+    } else {
+      resetElementStyle('main-container');
     }
   }, [isCreating]);
 

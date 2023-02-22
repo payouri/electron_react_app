@@ -33,13 +33,15 @@ export const Button: FC<ButtonProps> = ({
       ) : (
         prependIcon
       )}
-      <span
-        style={{
-          flex: '0 0 auto',
-        }}
-      >
-        {props.children}
-      </span>
+      {props.children ? (
+        <span
+          style={{
+            flex: '0 0 auto',
+          }}
+        >
+          {props.children}
+        </span>
+      ) : null}
       {appendIcon}
     </StyledButton>
   );

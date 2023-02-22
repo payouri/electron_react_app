@@ -16,6 +16,14 @@ export const ItemGrid = ({
   onEditItem,
   onAddToCart,
 }: ItemGridProps) => {
+  console.log('ItemGrid', {
+    items,
+    loading,
+    loadMore,
+    onCreateItem,
+    onEditItem,
+    onAddToCart,
+  });
   const {
     grayscale: { 100: gray100 },
   } = useTheme();

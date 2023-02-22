@@ -10,11 +10,16 @@ export const NavigationButton = styled(Button)<NavigationButtonProps>`
     !active ? theme.grayscale[10] : theme.grayscale[140]} !important;
 `;
 
-export const MenuContainer = styled.div`
+export const NavigationContainer = styled.div<{ mode: 'compact' | 'normal' }>`
+  display: flex;
+  gap: ${({ theme }) => theme.gap[16]};
+  flex: ${({ mode }) => (mode === 'compact' ? '0 0 16rem' : '0 0 12rem')};
+`;
+
+export const SideMenuContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.gap[16]};
-  padding: ${({ theme }) => `${theme.gap[64]} ${theme.gap[16]} 0`};
-  flex: 0 0 12rem;
-  overflow-x: hidden;
+  height: 100%;
+  width: 16rem;
+  flex: 0 0 16rem;
 `;

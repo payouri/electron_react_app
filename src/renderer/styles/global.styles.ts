@@ -17,6 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     font-family: Inter, sans-serif;
+    overflow: hidden;
   }
   code, pre, samp, textarea, input {
     user-select: text;

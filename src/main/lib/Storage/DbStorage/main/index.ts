@@ -26,7 +26,12 @@ const handleWillQuit = async (event: Electron.Event): Promise<void> => {
   try {
     await Promise.all(
       localDB.getCollectionNames().map(async (name) => {
-        if (!localDB) return;
+        if (
+          !localDB ||
+          (Object.keys(localDB.collections[name].upserts).length === 0 &&
+            Object.keys(localDB.collections[name].removes).length === 0)
+        )
+          return;
         await saveCollectionToDisk(localDB.collections[name]);
       })
     );

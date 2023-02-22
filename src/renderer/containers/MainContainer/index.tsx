@@ -7,6 +7,7 @@ import {
 } from 'renderer/customHooks/useAppNavigation';
 import { getNavigationEntries } from 'renderer/customHooks/useAppNavigation/helpers/getNavigationEntries';
 import { useCrossWindowMessage } from 'renderer/customHooks/useCrossWindowMessage';
+import { useElementTransitionStyle } from 'renderer/customHooks/useTransitionOrchestrator';
 import { PageContainer } from './styles';
 
 export const MainContainer = () => {
@@ -30,9 +31,12 @@ export const MainContainer = () => {
   //     .catch(console.error);
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
+  const { style } = useElementTransitionStyle({
+    elementId: 'main-container',
+  });
 
   return (
-    <PageContainer>
+    <PageContainer style={style}>
       <NavigationMenu
         currentNavigationEntry={currentNavigationEntry}
         goTo={goTo}

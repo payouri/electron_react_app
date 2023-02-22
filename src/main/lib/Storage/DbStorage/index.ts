@@ -1,3 +1,4 @@
+import { TypedEmitter } from 'tiny-typed-emitter';
 import { fileLogger } from '../../Logger';
 import { DBStorageNameAlreadyTaken } from './errors';
 import { generateUniqueDbItemId } from './helpers/generateUniqueItemId';
@@ -15,6 +16,12 @@ const createDBStorage = async <T extends Record<string, unknown>>({
   'get' | 'set' | 'query' | 'generateId' | 'unset' | 'on' | 'off' | 'emit'
 >): Promise<DbStorageAPI<T>> => {
   const localDb = getLocalDb();
+
+  const emitter = new TypedEmitter<{
+    itemAdded: (item: T) => void;
+    itemUpdated: (item: T) => void;
+    itemRemoved: (item: T) => void;
+  }>();
 
   if (name in localDb.collections) {
     throw new DBStorageNameAlreadyTaken(name);
@@ -108,6 +115,9 @@ const createDBStorage = async <T extends Record<string, unknown>>({
       }
     },
     generateId: () => generateUniqueDbItemId(localDb.collections[name]),
+    on: emitter.on.bind(emitter),
+    off: emitter.off.bind(emitter),
+    emit: emitter.emit.bind(emitter),
   };
 };
 

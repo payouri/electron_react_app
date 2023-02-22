@@ -47,25 +47,12 @@ export async function createStorage<T extends Record<string, unknown>>(
     });
     if (existingStorage) return existingStorage as StorageTypeMap<T>['DB'];
 
-    const emitter = new TypedEmitter<{
-      itemAdded: (item: T) => void;
-      itemUpdated: (item: T) => void;
-      itemRemoved: (item: T) => void;
-    }>();
-
-    const newStorage = Object.assign(
-      await createDBStorage<T>({
-        ...params,
-        name,
-        type: storageType,
-        validator,
-      }),
-      {
-        emit: emitter.emit.bind(emitter),
-        on: emitter.on.bind(emitter),
-        off: emitter.off.bind(emitter),
-      }
-    );
+    const newStorage = await createDBStorage<T>({
+      ...params,
+      name,
+      type: storageType,
+      validator,
+    });
 
     setStorage(newStorage);
 

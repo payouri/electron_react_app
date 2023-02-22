@@ -20,6 +20,7 @@ export const getNavigationMap = (): NavigationMap => ({
     icon: <Icon name="cart" size={IconSize.MEDIUM} />,
     component: CartsRouter,
     name: NavigationEntry.CARTS,
+    sideMenu: () => <div>Filters</div>,
   },
   [NavigationEntry.ITEMS]: {
     label: 'Saved Items',
@@ -28,5 +29,6 @@ export const getNavigationMap = (): NavigationMap => ({
     icon: <Icon name="items" size={IconSize.MEDIUM} />,
     component: ItemsRouter,
     name: NavigationEntry.ITEMS,
+    sideMenu: () => <div>Filters</div>,
   },
 });
