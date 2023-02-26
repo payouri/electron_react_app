@@ -35,8 +35,6 @@ export const getInjectedAppsIPCRoutes = ({
     switch (type) {
       case 'injected_sidebar': {
         unmountComponentAtNode(microAppMountNode);
-        console.log('Destroyed react component: ', InjectedSidebar);
-        console.log(pageNode);
         break;
       }
       default:

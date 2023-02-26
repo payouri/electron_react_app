@@ -4,6 +4,7 @@ import { Item } from 'main/entities/Item/Item.types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from 'renderer/components/Button';
+import { Input } from 'renderer/components/Input';
 import styled from 'styled-components';
 
 export type ItemFormProps = {
@@ -61,7 +62,7 @@ export const ItemForm = ({ item, onSubmit }: ItemFormProps) => {
     <FormWrapper onSubmit={handleSubmit(loadSubmit)}>
       <InputWrapper>
         <InputLabel htmlFor="name">Item name</InputLabel>
-        <input
+        <Input
           {...register('name', {
             minLength: 2,
             required: true,
@@ -75,7 +76,7 @@ export const ItemForm = ({ item, onSubmit }: ItemFormProps) => {
       </InputWrapper>
       <InputWrapper>
         <InputLabel htmlFor="price">Item price</InputLabel>
-        <input
+        <Input
           {...register('price', {
             min: 0,
             valueAsNumber: true,

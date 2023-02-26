@@ -5,7 +5,7 @@ import { ButtonProps } from './types';
 
 type StyledButtonProps = Pick<
   ButtonProps,
-  'size' | 'block' | 'color' | 'disabled' | 'loading'
+  'size' | 'block' | 'color' | 'disabled' | 'loading' | 'minWidth'
 >;
 
 export const StyledButton = styled.button<StyledButtonProps>`
@@ -21,6 +21,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   transition: transform 0.2s ease-in-out;
   white-space: nowrap;
   width: ${({ block }) => (block ? '100%' : 'auto')};
+  min-width: ${({ minWidth }) =>
+    typeof minWidth === 'number' ? `${minWidth}px` : minWidth || 'auto'};
   ${getButtonColor};
   ${getButtonStyleFromSize}
   &:hover {

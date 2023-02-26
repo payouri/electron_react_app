@@ -1,3 +1,4 @@
+import { BrowserForm } from 'renderer/components/BrowserForm';
 import { Icon } from 'renderer/components/Icon';
 import { IconSize } from 'renderer/components/Icon/types';
 import { CartsRouter } from 'renderer/containers/CartsRouter';
@@ -10,7 +11,12 @@ export const getNavigationMap = (): NavigationMap => ({
     mountPoint: '/',
     exactPath: true,
     icon: <Icon name="home" size={IconSize.MEDIUM} />,
-    component: () => <div>Home</div>,
+    component: () => (
+      <div>
+        Home
+        <BrowserForm />
+      </div>
+    ),
     name: NavigationEntry.HOME,
   },
   [NavigationEntry.CARTS]: {

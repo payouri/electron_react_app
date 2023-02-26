@@ -1,10 +1,8 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import { BrowserWindow } from 'electron';
-import { WindowType } from '../lib/Browser/types';
-import { getBrowserWindow } from '../lib/Browser';
-import MenuBuilder from '../menu';
-import { resolveHtmlPath } from '../util';
+import { getBrowserWindow } from './Browser';
+import { getDefaultSecondaryWindow } from './Default';
 import { SecondaryWindowType } from './types';
 
 export * from './types';
@@ -25,63 +23,31 @@ export const getSecondaryWindow = async (
     return secondaryWindowsMap.get(type) as BrowserWindow;
   }
 
-  const secondaryWindow = getBrowserWindow({
-    windowType: WindowType.SECONDARY,
-  });
+  if (type === SecondaryWindowType.BROWSER) {
+    const browserWindow = getBrowserWindow({
+      windowId: 'browser',
+    });
 
-  secondaryWindow.loadURL(resolveHtmlPath('./secondary.html'));
+    secondaryWindowsMap.set(type, browserWindow);
 
-  secondaryWindow.webContents.session.webRequest.onBeforeRequest(
-    (details, callback) => {
-      // console.log(details.url);
-      if (
-        details.url.startsWith('http') &&
-        !details.url.startsWith('http://localhost') &&
-        !details.url.startsWith('https://localhost')
-      ) {
-        callback({
-          cancel: false,
-          redirectURL: `http://localhost:9999/proxy/${details.url}`,
-        });
-      } else {
-        callback({
-          cancel: false,
-        });
-      }
-    }
-  );
+    browserWindow.on('closed', () => {
+      secondaryWindowsMap.delete(type);
+    });
 
-  secondaryWindow.webContents.session.webRequest.onHeadersReceived(
-    { urls: ['*://*/*'] },
-    (d, c) => {
-      if (d.responseHeaders?.['X-Frame-Options']) {
-        delete d.responseHeaders['X-Frame-Options'];
-      } else if (d.responseHeaders?.['x-frame-options']) {
-        delete d.responseHeaders['x-frame-options'];
-      }
+    return browserWindow;
+  }
 
-      if (!d.url.startsWith('http://localhost')) {
-        console.log({
-          'd.responseHeaders': d.responseHeaders,
-        });
-      }
+  if (type === SecondaryWindowType.DEFAULT) {
+    const secondaryWindow = await getDefaultSecondaryWindow();
 
-      c({
-        cancel: false,
-        responseHeaders: {
-          ...d.responseHeaders,
-        },
-      });
-    }
-  );
+    secondaryWindowsMap.set(type, secondaryWindow);
 
-  const menuBuilder = new MenuBuilder(secondaryWindow);
-  menuBuilder.buildMenu();
-  secondaryWindowsMap.set(type, secondaryWindow);
+    secondaryWindow.on('closed', () => {
+      secondaryWindowsMap.delete(type);
+    });
 
-  secondaryWindow.on('closed', () => {
-    secondaryWindowsMap.delete(type);
-  });
+    return secondaryWindow;
+  }
 
-  return secondaryWindow;
+  throw new Error(`Unknown secondary window type: ${type}`);
 };

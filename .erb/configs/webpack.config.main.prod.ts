@@ -23,7 +23,7 @@ const configuration: webpack.Configuration = {
   target: 'electron-main',
 
   entry: {
-    proxy: path.join(webpackPaths.srcMainPath, 'main/proxyServer.ts'),
+    proxy: path.join(webpackPaths.srcServerPath, 'index.ts'),
     main: path.join(webpackPaths.srcMainPath, 'main.ts'),
     preload: path.join(webpackPaths.srcMainPath, 'preload.ts'),
   },

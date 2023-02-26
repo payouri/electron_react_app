@@ -35,6 +35,7 @@ export type ImagePreviewProps = {
   height?: CSSProperties['height'];
   aspectRatio?: CSSProperties['aspectRatio'];
   imagesFit?: CSSProperties['objectFit'];
+  hasPointerEvents?: boolean;
 };
 
 const ImageWrapper = styled.div.attrs<
@@ -47,7 +48,7 @@ const ImageWrapper = styled.div.attrs<
     width,
     height,
   },
-}))<Pick<ImagePreviewProps, 'imagesFit'>>`
+}))<Pick<ImagePreviewProps, 'imagesFit' | 'hasPointerEvents'>>`
   position: relative;
   max-width: 100%;
   max-height: 100%;
@@ -58,11 +59,14 @@ const ImageWrapper = styled.div.attrs<
     height: 100%;
     width: 100%;
     object-fit: ${({ imagesFit }) => imagesFit || 'cover'};
-    pointer-events: none;
+    pointer-events: ${({ hasPointerEvents }) =>
+      hasPointerEvents ? 'all' : 'none'}};
   }
 `;
 
-const defaultProps: Required<Omit<ImagePreviewProps, 'src' | 'alt'>> = {
+const defaultProps: Required<
+  Omit<ImagePreviewProps, 'src' | 'alt' | 'hasPointerEvents'>
+> = {
   width: '100%',
   height: '100%',
   aspectRatio: 'unset',

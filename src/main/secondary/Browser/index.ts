@@ -1,23 +1,22 @@
-import { BrowserWindow, BrowserView, app } from 'electron';
+import { app, BrowserView, BrowserWindow } from 'electron';
 import path from 'path';
-import { WindowType } from './types';
 
 export { executeJavascript } from './helpers/executeJavascript';
 
 type ExtendedBrowserWindow = BrowserWindow & {
-  windowType: WindowType;
+  customId: string;
 };
 
 const windows = new Map<string, ExtendedBrowserWindow>();
 
 const createBrowserWindow = ({
-  windowType,
+  windowId,
   size = { width: 800, height: 600 },
   autoShow = false,
 }: {
   autoShow?: boolean;
   size?: { width: number; height: number };
-  windowType: WindowType;
+  windowId: string;
 }): ExtendedBrowserWindow => {
   const RESOURCES_PATH = app.isPackaged
     ? path.join(process.resourcesPath, 'assets')
@@ -53,20 +52,16 @@ const createBrowserWindow = ({
   }
 
   w.on('closed', () => {
-    windows.delete(windowType);
+    windows.delete(windowId);
   });
 
-  return Object.assign(w, { windowType });
+  return Object.assign(w, { customId: 'default' });
 };
 
-export const getBrowserWindow = ({
-  windowType,
-}: {
-  windowType: WindowType;
-}) => {
-  if (!windows.has(windowType)) {
-    windows.set(windowType, createBrowserWindow({ windowType }));
+export const getBrowserWindow = ({ windowId }: { windowId: string }) => {
+  if (!windows.has(windowId)) {
+    windows.set(windowId, createBrowserWindow({ windowId }));
   }
 
-  return windows.get(windowType)!;
+  return windows.get(windowId)!;
 };

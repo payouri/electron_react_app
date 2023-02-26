@@ -1,3 +1,3 @@
-import { WindowType } from '../../../main/lib/Browser/types';
+import { SecondaryWindowType } from '../../../main/secondary/types';
 
-export { WindowType };
+export { SecondaryWindowType as WindowType };

@@ -15,12 +15,14 @@ export const Button: FC<ButtonProps> = ({
   block,
   loading,
   disabled,
+  minWidth,
   'aria-disabled': ariaDisabled,
   ...props
 }) => {
   return (
     <StyledButton
       {...props}
+      minWidth={minWidth}
       size={size}
       aria-disabled={ariaDisabled || disabled || loading}
       disabled={loading || disabled}

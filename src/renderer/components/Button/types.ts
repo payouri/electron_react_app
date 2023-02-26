@@ -1,4 +1,5 @@
 import { HTMLAttributes, PropsWithChildren } from 'react';
+import { CSSProperties } from 'styled-components';
 
 export type ButtonColor =
   | 'primary'
@@ -18,6 +19,8 @@ export type ButtonProps = PropsWithChildren<
     prependIcon?: React.ReactNode;
     appendIcon?: React.ReactNode;
     loading?: boolean;
+    type: 'button' | 'submit' | 'reset';
+    minWidth?: CSSProperties['minWidth'];
   }
 >;
 

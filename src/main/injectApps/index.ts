@@ -4,6 +4,11 @@ import { getInjectedAppsIPCRoutes } from './router';
 import { isValidInjectedAppsMessage } from './router/helpers/isValidInjectedAppsMessage';
 import { InjectedAppsMessageType } from './router/types';
 
+const checkInterval = () =>
+  setInterval(() => {
+    console.log('checkInterval', document.readyState);
+  }, 5000);
+
 export const initInjectedApps = () => {
   const pageNode = initRootPageNode();
 
@@ -33,7 +38,8 @@ export const initInjectedApps = () => {
     ipcRenderer.off('IPC_SCRIPTS_CHANNEL', listener);
   });
 
-  InjectedAppsIPCRoutes[InjectedAppsMessageType.RENDER_COMPONENT]({
-    type: 'injected_sidebar',
-  });
+  checkInterval();
+  // InjectedAppsIPCRoutes[InjectedAppsMessageType.RENDER_COMPONENT]({
+  //   type: 'injected_sidebar',
+  // });
 };

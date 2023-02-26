@@ -1,8 +1,5 @@
-import {
-  executeJavascript,
-  getBrowserWindow,
-  WindowType,
-} from '../../../lib/Browser';
+import { executeJavascript } from '../../../secondary/Browser';
+import { getSecondaryWindow, SecondaryWindowType } from '../../../secondary';
 import {
   IPCMessagePayload,
   IPCMessageType,
@@ -15,9 +12,7 @@ export const BrowserRoutes = {
   ): Promise<IPCResponsePayload[IPCMessageType.OPEN_BROWSER]> => {
     const { url, scriptsToRun, maximize } = payload;
 
-    const browser = getBrowserWindow({
-      windowType: WindowType.Browser,
-    });
+    const browser = await getSecondaryWindow(SecondaryWindowType.BROWSER);
 
     if (maximize) {
       browser.maximize();
@@ -34,6 +29,10 @@ export const BrowserRoutes = {
 
     browser.loadURL(url, {
       userAgent: 'Chrome',
+    });
+
+    browser.once('ready-to-show', () => {
+      browser.show();
     });
   },
 } as const;
