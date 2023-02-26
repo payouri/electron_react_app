@@ -123,6 +123,7 @@
     "electron-updater": "^5.2.3",
     "minimongo": "^6.12.6",
     "nanoid": "^3.3.4",
+    "rc-input": "^0.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.1",

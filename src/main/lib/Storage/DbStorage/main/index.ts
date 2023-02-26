@@ -88,4 +88,4 @@ export const getLocalDb = () => {
   return localDB;
 };
 
-app.on('will-quit', handleWillQuit);
+process.on('beforeExit', handleWillQuit);

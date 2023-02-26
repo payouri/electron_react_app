@@ -17,6 +17,7 @@ import { useCarts } from 'renderer/entities/Cart/hooks/useCarts';
 import { CreateCartForm } from './components/CreateCartForm';
 import { CartGrid } from './components/CartGrid';
 import { MainCartsContainer } from './styles';
+import { PageHeader } from 'renderer/components/PageHeader';
 
 export const CartsRouter = ({
   label,
@@ -63,7 +64,11 @@ export const CartsRouter = ({
 
   return (
     <MainCartsContainer>
-      <h1>{label}</h1>
+      <PageHeader
+        actionsPosition="right"
+        title={label}
+        actionJustification="space-between"
+      />
       <Routes>
         <Route
           path="/:itemId"

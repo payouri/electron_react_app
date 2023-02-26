@@ -5,4 +5,5 @@ export const MainItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 100%;
+  gap: ${({ theme }) => theme.gap[20]};
 `;

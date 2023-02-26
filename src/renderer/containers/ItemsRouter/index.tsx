@@ -9,6 +9,8 @@ import {
   useParams,
 } from 'react-router-dom';
 import { Modal } from 'renderer/components/Modal';
+import { PageHeader } from 'renderer/components/PageHeader';
+import { Search } from 'renderer/components/Search';
 import {
   NavigationDescriptor,
   NavigationEntry,
@@ -18,8 +20,10 @@ import { useTransitionOrchestrator } from 'renderer/customHooks/useTransitionOrc
 import { useCarts } from 'renderer/entities/Cart/hooks/useCarts';
 import { useItems } from 'renderer/entities/Item/hooks/useItems';
 import { MessageType, sendMessage } from 'renderer/services';
+import { AddItemButton } from './components/AddItemButton';
 import { ItemForm } from './components/ItemForm';
 import { ItemGrid } from './components/ItemGrid';
+import { HeaderActions } from './components/ItemGrid/styles';
 import { MainItemsContainer } from './styles';
 
 export const ItemsRouter = ({
@@ -155,7 +159,21 @@ export const ItemsRouter = ({
 
   return (
     <MainItemsContainer>
-      <h1>{label}</h1>
+      <PageHeader
+        actionsPosition="right"
+        title={label}
+        actionJustification="space-between"
+        actions={
+          <HeaderActions block justify="space-between">
+            <Search
+              onSearch={(searchTerm) => {
+                console.log(searchTerm);
+              }}
+            />
+            <AddItemButton onCreate={handleOnCreateItem} />
+          </HeaderActions>
+        }
+      />
       {/* {isCreating && (
         <div>
           <input
@@ -172,34 +190,25 @@ export const ItemsRouter = ({
       )} */}
       <Routes>
         <Route
-          index
-          element={
-            <ItemGrid
-              items={items}
-              loading={loading}
-              loadMore={loadMore}
-              onCreateItem={handleOnCreateItem}
-              onEditItem={handleOnEditItem}
-              onAddToCart={handleAddToCart}
-            />
-          }
-        />
-        <Route
-          path="/create"
-          element={
-            <div>
-              <h1>{label}</h1>
-            </div>
-          }
-        />
-        <Route
           path="/all"
           element={
             <ItemGrid
               items={items}
               loading={loading}
               loadMore={loadMore}
-              onCreateItem={handleOnCreateItem}
+              onEditItem={handleOnEditItem}
+              onAddToCart={handleAddToCart}
+            />
+          }
+        />
+        <Route path="/:itemId" element={<div />} />
+        <Route
+          index
+          element={
+            <ItemGrid
+              items={items}
+              loading={loading}
+              loadMore={loadMore}
               onEditItem={handleOnEditItem}
               onAddToCart={handleAddToCart}
             />

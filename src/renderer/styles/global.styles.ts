@@ -7,6 +7,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     line-height: 1.57;
+    font-family: Inter, sans-serif;
   }
   ::marker {
     display: block
@@ -16,7 +17,6 @@ export const GlobalStyle = createGlobalStyle`
   }
   body {
     margin: 0;
-    font-family: Inter, sans-serif;
     overflow: hidden;
   }
   code, pre, samp, textarea, input {
