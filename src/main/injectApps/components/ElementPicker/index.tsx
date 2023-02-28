@@ -83,7 +83,15 @@ const getNewPosition = ({
   containerWidth: number;
   containerHeight: number;
 }) => {
-  const { width, height } = document.body.getBoundingClientRect();
+  const { width } = document.body.getBoundingClientRect();
+  const {
+    document: { body },
+  } = window;
+  const height = Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    body.clientHeight
+  );
 
   const newX =
     x + containerWidth + ELEMENT_OFFSET_PX > width
@@ -266,7 +274,6 @@ export const ElementPicker = ({ elementType }: ElementPickerProps) => {
     const onElementClick = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('clicked', matchingElement);
     };
 
     if (node) {
@@ -281,18 +288,20 @@ export const ElementPicker = ({ elementType }: ElementPickerProps) => {
   }, [matchingElement?.node]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <ElementPickerContainer
-        left={mousePosition?.x}
-        top={mousePosition?.y}
-        ref={containerRef}
-      >
-        <PickerHeadline elementType={elementType} />
-        <PickerBody
-          elementType={elementType}
-          matchingElement={matchingElement}
-        />
-      </ElementPickerContainer>
-    </ThemeProvider>
+    <>
+      <ThemeProvider theme={theme}>
+        <ElementPickerContainer
+          left={mousePosition?.x}
+          top={mousePosition?.y}
+          ref={containerRef}
+        >
+          <PickerHeadline elementType={elementType} />
+          <PickerBody
+            elementType={elementType}
+            matchingElement={matchingElement}
+          />
+        </ElementPickerContainer>
+      </ThemeProvider>
+    </>
   );
 };

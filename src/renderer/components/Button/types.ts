@@ -19,7 +19,7 @@ export type ButtonProps = PropsWithChildren<
     prependIcon?: React.ReactNode;
     appendIcon?: React.ReactNode;
     loading?: boolean;
-    type: 'button' | 'submit' | 'reset';
+    type?: 'button' | 'submit' | 'reset';
     minWidth?: CSSProperties['minWidth'];
   }
 >;

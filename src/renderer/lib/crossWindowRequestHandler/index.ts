@@ -1,4 +1,4 @@
-import { WindowType } from 'main/lib/Browser/types';
+import { WindowType } from 'main/lib/MessageBridge/types';
 import {
   ErrorMessage,
   FailureResponse,

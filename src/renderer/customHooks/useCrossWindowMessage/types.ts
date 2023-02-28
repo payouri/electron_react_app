@@ -1,3 +1,3 @@
-import { SecondaryWindowType } from '../../../main/secondary/types';
+import { WindowType } from '../../../main/lib/MessageBridge/types';
 
-export { SecondaryWindowType as WindowType };
+export type { WindowType };

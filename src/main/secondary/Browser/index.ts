@@ -37,6 +37,8 @@ const createBrowserWindow = ({
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(process.cwd(), '/.erb/dll/preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
     show: false,
     autoHideMenuBar: false,

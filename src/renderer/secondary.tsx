@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 // import { LoadableIframe } from './components/LoadableIframe';
 import { PageContainer } from './containers/MainContainer/styles';
 import { useCrossWindowMessage } from './customHooks/useCrossWindowMessage';
-import { WindowType } from './customHooks/useCrossWindowMessage/types';
+import { SecondaryWindowType } from 'main/lib/MessageBridge/types';
 import { useElementPicker } from './customHooks/useElementPicker';
 import { GlobalStyle } from './styles/global.styles';
 import { theme } from './styles/theme';
@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const App = () => {
   useCrossWindowMessage({
-    windowType: WindowType.SECONDARY,
+    windowType: SecondaryWindowType.DEFAULT,
   });
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [page, setPage] = useState<string | null>();

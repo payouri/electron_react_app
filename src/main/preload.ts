@@ -53,6 +53,12 @@ contextBridge.exposeInMainWorld('electron', {
     once(channel: IPCChannel, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    off(channel: IPCChannel, func: (...args: unknown[]) => void) {
+      ipcRenderer.removeListener(channel, func);
+    },
+    removeAllListeners(channel: IPCChannel) {
+      ipcRenderer.removeAllListeners(channel);
+    },
   },
   nanoid,
 });

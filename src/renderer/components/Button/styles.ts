@@ -8,7 +8,10 @@ type StyledButtonProps = Pick<
   'size' | 'block' | 'color' | 'disabled' | 'loading' | 'minWidth'
 >;
 
-export const StyledButton = styled.button<StyledButtonProps>`
+export const StyledButton = styled.button.withConfig<StyledButtonProps>({
+  shouldForwardProp: (prop, defaultValidatorFn) =>
+    prop !== 'loading' && defaultValidatorFn(prop),
+})<StyledButtonProps>`
   align-items: center;
   border-radius: ${({ theme }) => theme.borderRadius.button};
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};

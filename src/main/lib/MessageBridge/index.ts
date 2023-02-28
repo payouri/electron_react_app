@@ -1,7 +1,10 @@
 import { IpcMainEvent } from 'electron';
+import { getMainWindow } from '../../mainWindow';
 import { CROSS_WINDOW_CHANNEL } from '../../router/constants';
-import { getSecondaryWindow, SecondaryWindowType } from '../../secondary';
+import { getSecondaryWindow } from '../../secondary';
+import { isSecondaryWindowType } from '../../secondary/helpers/isSecondaryWindowType';
 import { createTimeout } from '../../utils/Timeout';
+import { isMainWindowType } from './helpers/isMainWindowType';
 import { isValidCrossWindowMessage } from './helpers/isValidCrossWindowMessage';
 import { MessageType } from './types';
 
@@ -49,10 +52,14 @@ export const MessageBridgeHandler = async (
       request: ipcEvent,
     });
 
-    (await getSecondaryWindow(SecondaryWindowType.DEFAULT)).webContents.send(
-      CROSS_WINDOW_CHANNEL,
-      message
-    );
+    if (isSecondaryWindowType(message.recipientType)) {
+      (await getSecondaryWindow(message.recipientType)).webContents.send(
+        CROSS_WINDOW_CHANNEL,
+        message
+      );
+    } else if (isMainWindowType(message.recipientType)) {
+      getMainWindow()?.webContents.send(CROSS_WINDOW_CHANNEL, message);
+    }
   }
 
   if (

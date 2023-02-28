@@ -7,12 +7,14 @@ import {
   CROSS_WINDOW_CHANNEL,
   IPC_ROUTER_CHANNEL,
   IPC_SCRIPTS_CHANNEL,
+  IPC_SCRIPTS_RESPONSE_CHANNEL,
 } from './constants';
 
 export type IPCChannel =
   | typeof IPC_ROUTER_CHANNEL
   | typeof IPC_SCRIPTS_CHANNEL
-  | typeof CROSS_WINDOW_CHANNEL;
+  | typeof CROSS_WINDOW_CHANNEL
+  | typeof IPC_SCRIPTS_RESPONSE_CHANNEL;
 
 type ListQuery = {
   start: number;

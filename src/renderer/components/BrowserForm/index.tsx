@@ -1,8 +1,44 @@
 import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { MessageType, sendMessage } from 'renderer/services';
 import { Button } from '../Button';
 import { Input } from '../Input';
+import { useBrowserMessage } from './useBrowserMessage';
+import {
+  IncomingIPCMessage as BrowserMessage,
+  InjectedAppsCrossWindowRequestType as BrowserRequestType,
+  OutGoingIPCMessage as BrowserResponse,
+} from '../../../main/injectApps/router/types';
+
+const SendHealthCheckButton = () => {
+  const [loading, setLoading] = useState(false);
+  const { sendBrowserMessage } = useBrowserMessage();
+
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      await sendBrowserMessage({
+        requestType: BrowserRequestType.HEALTH_CHECK,
+        payload: undefined,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button
+      loading={loading}
+      size="medium"
+      color="colorless"
+      onClick={handleClick}
+    >
+      Send Health Check
+    </Button>
+  );
+};
 
 export const BrowserForm = () => {
   const [loading, setLoading] = useState(false);
@@ -23,11 +59,7 @@ export const BrowserForm = () => {
     }
   };
 
-  const {
-    register,
-    control,
-    handleSubmit: onFormSubmit,
-  } = useForm({
+  const { control, handleSubmit: onFormSubmit } = useForm({
     defaultValues: {
       url: 'https://www.google.com',
     },
@@ -54,6 +86,7 @@ export const BrowserForm = () => {
       <Button loading={loading} size="medium" color="colorless" type="submit">
         Go
       </Button>
+      <SendHealthCheckButton />
     </form>
   );
 };

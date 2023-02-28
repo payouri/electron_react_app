@@ -20,7 +20,7 @@ export const BrowserRoutes = {
 
     executeJavascript(
       browser.webContents,
-      'window.electron.initInjectedApps();'
+      'window.electron.initInjectedApps(window.electron);'
     );
 
     if (scriptsToRun?.length) {

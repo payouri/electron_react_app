@@ -1,0 +1,6 @@
+export enum InjectedAppsCrossWindowRequestType {
+  TEST = 'test',
+  RENDER_COMPONENT = 'RENDER_COMPONENT',
+  DESTROY_COMPONENT = 'DESTROY_COMPONENT',
+  HEALTH_CHECK = 'HEALTH_CHECK',
+}

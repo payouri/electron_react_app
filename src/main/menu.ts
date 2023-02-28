@@ -1,3 +1,4 @@
+/* eslint-disable import/no-default-export */
 import {
   app,
   Menu,

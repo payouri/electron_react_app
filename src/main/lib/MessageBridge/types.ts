@@ -1,4 +1,10 @@
-import { WindowType } from '../Browser/types';
+import { SecondaryWindowType } from '../../secondary/types';
+
+export { SecondaryWindowType };
+
+export enum MainWindowType {
+  DEFAULT = 'main_default',
+}
 
 export enum MessageType {
   REQUEST = 'request',
@@ -28,10 +34,14 @@ export type FailureResponse = {
   };
 };
 
+export type HandlerResponse<MessagePayload> =
+  | SuccessResponse<MessagePayload>
+  | FailureResponse;
+
 export type RecipientResponse<MessagePayload> = {
   type: MessageType.RESPONSE;
   requestId: string;
-} & (SuccessResponse<MessagePayload> | FailureResponse);
+} & HandlerResponse<MessagePayload>;
 
 export type ErrorMessage = {
   type: MessageType.ERROR;
@@ -48,3 +58,5 @@ export type CrossWindowMessage<
 > =
   | SenderMessage<RequestType, RequestPayload>
   | RecipientResponse<ResponsePayload>;
+
+export type WindowType = SecondaryWindowType | MainWindowType;
