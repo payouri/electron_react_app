@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useResizeObserver = (
   {
@@ -12,7 +12,7 @@ export const useResizeObserver = (
   const [dimensions, setDimensions] = useState<DOMRectReadOnly | null>(null);
   const [element, setElement] = useState<Element | null>(initialElement);
 
-  const observer = useMemo(
+  const observer = useCallback(
     () =>
       new ResizeObserver((entries) => {
         entries.forEach((entry) => {
@@ -23,13 +23,15 @@ export const useResizeObserver = (
   );
 
   useEffect(() => {
+    const resizeObserver = observer();
+
     if (element) {
-      observer.observe(element);
+      resizeObserver.observe(element);
     }
 
     return () => {
       if (element) {
-        observer.unobserve(element);
+        resizeObserver.unobserve(element);
       }
     };
   }, [element, observer]);

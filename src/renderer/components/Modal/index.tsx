@@ -1,7 +1,8 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/jsx-props-no-spreading */
 import { useEffect, useState } from 'react';
-import { useKeyPress } from 'renderer/customHooks/useKeyPress';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
+import { useKeyPress } from '../../customHooks/useKeyPress';
 
 const ModalWrapper = styled.div`
   position: fixed;
@@ -16,7 +17,12 @@ const ModalWrapper = styled.div`
   z-index: ${({ theme }) => theme.elevationLevel[7]};
 `;
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{
+  height: CSSProperties['height'];
+  maxHeight: CSSProperties['maxHeight'];
+  width: CSSProperties['width'];
+  maxWidth: CSSProperties['maxWidth'];
+}>`
   background-color: ${({ theme }) => theme.grayscale[150]};
   border-radius: ${({ theme }) => theme.gap[4]};
   box-shadow: ${({ theme }) => theme.boxShadow.elevation[1]};
@@ -24,8 +30,10 @@ const ModalContainer = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.gap[8]};
   padding: ${({ theme }) => theme.gap[8]};
-  width: 100%;
-  max-width: 600px;
+  width: ${({ width }) => width};
+  max-width: ${({ maxWidth }) => maxWidth};
+  height: ${({ height }) => height};
+  max-height: ${({ maxHeight }) => maxHeight};
 `;
 
 const ModalHeader = styled.div`
@@ -44,8 +52,8 @@ const ModalCloseButton = styled.button`
   background-color: ${({ theme }) => theme.grayscale[150]};
   border: 2px solid transparent;
   cursor: pointer;
-  height: 24px;
-  width: 24px;
+  height: 1.5rem;
+  width: 1.5rem;
   padding: 0;
   margin: 0;
   display: flex;
@@ -71,6 +79,10 @@ export type ModalProps = {
   onClose: () => void;
   title: string;
   open: boolean;
+  width?: CSSProperties['width'];
+  height?: CSSProperties['height'];
+  maxWidth?: CSSProperties['maxWidth'];
+  maxHeight?: CSSProperties['maxHeight'];
 };
 
 export const Modal = ({
@@ -78,6 +90,10 @@ export const Modal = ({
   onClose,
   title,
   open,
+  height = 'auto',
+  maxHeight = 'unset',
+  width = '100%',
+  maxWidth = '600px',
   ...props
 }: ModalProps) => {
   const [hasFocus, setHasFocus] = useState(false);
@@ -116,6 +132,10 @@ export const Modal = ({
       onClick={onClose}
     >
       <ModalContainer
+        height={height}
+        maxHeight={maxHeight}
+        width={width}
+        maxWidth={maxWidth}
         onClick={(event) => {
           event.stopPropagation();
         }}

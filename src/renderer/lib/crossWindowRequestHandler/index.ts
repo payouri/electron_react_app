@@ -25,11 +25,15 @@ const HandlersMap: {
   },
 };
 
+// This function accepts a message type and returns a function that can handle messages of that type.
+// It is used to create handlers for messages from the parent window
+// and messages from the child window.
 export const crossWindowRequestHandler =
   (windowType: WindowType) =>
   async (
     request: unknown
   ): Promise<RecipientResponse<unknown> | ErrorMessage | undefined> => {
+    // Validate message
     if (!isValidSenderMessage(request)) {
       return {
         error: {
@@ -39,15 +43,18 @@ export const crossWindowRequestHandler =
         type: MessageType.ERROR,
       };
     }
+    // Ignore messages that are not of type request
     if (request.type !== MessageType.REQUEST) {
       return undefined;
     }
+    // Ignore messages that are not intended for this window type
     if (request.recipientType !== windowType) {
       console.warn(
         `Request intended for ${request.recipientType} but received by ${windowType}`
       );
       return undefined;
     }
+    // Ignore messages of unknown request type
     if (!isKnownRequestType(request.requestType)) {
       return {
         hasFailed: true,
@@ -60,6 +67,7 @@ export const crossWindowRequestHandler =
       };
     }
 
+    // Handle message
     const response = await HandlersMap[request.requestType]();
 
     return {

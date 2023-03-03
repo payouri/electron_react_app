@@ -3,7 +3,22 @@ import { css, ThemeProvider } from 'styled-components';
 import { theme } from '../../../../renderer/styles/theme';
 import { ELEMENT_OFFSET_PX } from './constants';
 import { ElementPickerContainer, EllipsisText, PickerTitle } from './styles';
-import { ElementPickerProps, ElementResultByType } from './types';
+import {
+  ElementPickerProps,
+  ElementResultByType,
+  ImageElementResult,
+  isImage,
+  isLink,
+  isNumber,
+  isText,
+  LinkElementResult,
+  NumberElementResult,
+  processImage,
+  processLink,
+  processNumber,
+  processText,
+  TextElementResult,
+} from './types';
 
 const PickerHeadline = ({
   elementType,
@@ -26,6 +41,52 @@ const PickerHeadline = ({
   return null;
 };
 
+const getLinkContent = (matchingElement: LinkElementResult | null) => {
+  if (!matchingElement) {
+    return null;
+  }
+  return (
+    <div>
+      <EllipsisText>Link: {matchingElement.href}</EllipsisText>
+      <EllipsisText>Text: {matchingElement.text}</EllipsisText>
+    </div>
+  );
+};
+
+const getImageContent = (matchingElement: ImageElementResult | null) => {
+  if (!matchingElement) {
+    return null;
+  }
+  return (
+    <div>
+      <EllipsisText>Image: {matchingElement.src}</EllipsisText>
+      <EllipsisText>Alt: {matchingElement.alt}</EllipsisText>
+    </div>
+  );
+};
+
+const getNumberContent = (matchingElement: NumberElementResult | null) => {
+  if (!matchingElement) {
+    return null;
+  }
+  return (
+    <div>
+      <EllipsisText>Number: {matchingElement.number}</EllipsisText>
+    </div>
+  );
+};
+
+const getTextContent = (matchingElement: TextElementResult | null) => {
+  if (!matchingElement) {
+    return null;
+  }
+  return (
+    <div>
+      <EllipsisText>Text: {matchingElement.text}</EllipsisText>
+    </div>
+  );
+};
+
 const PickerBody = ({
   elementType,
   matchingElement,
@@ -35,38 +96,17 @@ const PickerBody = ({
     | ElementResultByType[ElementPickerProps['elementType']]
     | null;
 }) => {
-  if (!matchingElement) {
-    return null;
+  if (elementType === 'link') {
+    return getLinkContent(matchingElement as LinkElementResult | null);
   }
-  if (elementType === 'link' && 'href' in matchingElement) {
-    return (
-      <div>
-        <EllipsisText>Link: {matchingElement.href}</EllipsisText>
-        <EllipsisText>Text: {matchingElement.text}</EllipsisText>
-      </div>
-    );
+  if (elementType === 'image') {
+    return getImageContent(matchingElement as ImageElementResult | null);
   }
-  if (elementType === 'image' && 'src' in matchingElement) {
-    return (
-      <div>
-        <EllipsisText>Image: {matchingElement.src}</EllipsisText>
-        <EllipsisText>Alt: {matchingElement.alt}</EllipsisText>
-      </div>
-    );
+  if (elementType === 'number') {
+    return getNumberContent(matchingElement as NumberElementResult | null);
   }
-  if (elementType === 'number' && 'number' in matchingElement) {
-    return (
-      <div>
-        <EllipsisText>Number: {matchingElement.number}</EllipsisText>
-      </div>
-    );
-  }
-  if (elementType === 'text' && 'text' in matchingElement) {
-    return (
-      <div>
-        <EllipsisText>Text: {matchingElement.text}</EllipsisText>
-      </div>
-    );
+  if (elementType === 'text') {
+    return getTextContent(matchingElement as TextElementResult | null);
   }
 
   return null;
@@ -107,82 +147,35 @@ const getNewPosition = ({
 
 function handleComposedPath(
   composedPath: EventTarget[],
-  elementType: 'image'
-): ElementResultByType['image'] | null;
-function handleComposedPath(
-  composedPath: EventTarget[],
-  elementType: 'number'
-): ElementResultByType['number'] | null;
-function handleComposedPath(
-  composedPath: EventTarget[],
-  elementType: 'link'
-): ElementResultByType['link'] | null;
-function handleComposedPath(
-  composedPath: EventTarget[],
-  elementType: 'text'
-): ElementResultByType['text'] | null;
-function handleComposedPath(
-  composedPath: EventTarget[],
   elementType: ElementPickerProps['elementType']
-):
-  | ElementResultByType['text']
-  | ElementResultByType['link']
-  | ElementResultByType['image']
-  | ElementResultByType['number']
-  | null {
+): ElementResultByType[ElementPickerProps['elementType']] | null {
   if (elementType === 'link') {
-    const link = composedPath.find(
-      (target): target is HTMLAnchorElement =>
-        target instanceof HTMLAnchorElement
-    );
+    const link = composedPath.find(isLink);
+
     if (link) {
-      return {
-        href: link.href,
-        text: link.textContent?.trim() || '',
-        node: link,
-      };
+      return processLink(link);
     }
   }
   if (elementType === 'image') {
-    const image = composedPath.find(
-      (target): target is HTMLImageElement => target instanceof HTMLImageElement
-    );
+    const image = composedPath.find(isImage);
+
     if (image) {
-      return {
-        src: image.src,
-        alt: image.alt,
-        node: image,
-      };
+      return processImage(image);
     }
   }
   if (elementType === 'number') {
-    const number = composedPath.find(
-      (target): target is HTMLImageElement =>
-        target instanceof HTMLElement &&
-        !Number.isNaN(Number(target.textContent))
-    );
+    const number = composedPath.find(isNumber);
+
     if (number) {
-      return {
-        number: Number(number.textContent),
-        node: number,
-      };
+      return processNumber(number);
     }
   }
   if (elementType === 'text') {
     const lastElement = composedPath.shift();
-    const text =
-      lastElement instanceof HTMLElement &&
-      lastElement.innerText?.trim().length &&
-      lastElement?.children.length === 0
-        ? lastElement
-        : null;
+    const text = isText(lastElement);
 
     if (text) {
-      // console.log(text.textContent?.trim() || '');
-      return {
-        text: text.textContent?.trim() || '',
-        node: text,
-      };
+      return processText(lastElement);
     }
   }
 
@@ -234,8 +227,6 @@ export const ElementPicker = ({ elementType }: ElementPickerProps) => {
 
       const newMatchingElement = handleComposedPath(
         e.composedPath(),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         elementType
       );
 

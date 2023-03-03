@@ -60,7 +60,7 @@ const getSpinnerRingSize = ({ ringSize, size }: SpinnerProps) => {
     border-width: ${size === 'small'
       ? '0.125rem'
       : size === 'fit'
-      ? '.125em'
+      ? '0.125rem'
       : '0.25rem'};
   `;
 };

@@ -27,10 +27,6 @@ ipcMain.on(
 ipcMain.on(IPC_ROUTER_CHANNEL, IPCRouter);
 ipcMain.on(CROSS_WINDOW_CHANNEL, MessageBridgeHandler);
 
-/**
- * Add event listeners...
- */
-
 app.on('window-all-closed', async () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed

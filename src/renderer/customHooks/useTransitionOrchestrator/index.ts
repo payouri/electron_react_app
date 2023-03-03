@@ -1,6 +1,3 @@
-// transform: scale(1.2);
-//     filter: blur(5px);
-
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useInjectReducer } from 'redux-injectors';
@@ -16,7 +13,9 @@ import {
 export const useElementTransitionStyle = ({
   elementId,
 }: UseElementTransitionStyleParams): UseElementTransitionStyleReturnType => {
+  // Create a reducer that is tied to the custom hook
   useInjectReducer({ key, reducer });
+  // Get the style from the store
   const style = useSelector(selectElementStyles(elementId));
 
   return {
@@ -27,11 +26,13 @@ export const useElementTransitionStyle = ({
 export const useTransitionOrchestrator = ({
   defaultTransition,
 }: UseTransitionOrchestratorParams): UseTransitionOrchestratorReturnType => {
+  // Create a reducer that is tied to the custom hook
   useInjectReducer({ key, reducer });
   const dispatch = useDispatch();
 
   return {
     updateElementStyle: (elementId, style) => {
+      // Dispatch an action to update the style in the store
       dispatch(
         actions.setElementStyle({
           elementId,
@@ -43,6 +44,7 @@ export const useTransitionOrchestrator = ({
       );
     },
     resetElementStyle: (elementId) => {
+      // Dispatch an action to update the style in the store
       dispatch(actions.resetElementStyle({ elementId, defaultTransition }));
     },
   };

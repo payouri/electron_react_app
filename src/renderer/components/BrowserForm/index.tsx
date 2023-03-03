@@ -10,6 +10,11 @@ import {
   OutGoingIPCMessage as BrowserResponse,
 } from '../../../main/injectApps/router/types';
 
+/**
+ * The following code is used to send a health check request to the browser.
+ * The response is then used to determine whether or not the browser is
+ * currently alive.
+ */
 const SendHealthCheckButton = () => {
   const [loading, setLoading] = useState(false);
   const { sendBrowserMessage } = useBrowserMessage();
@@ -17,10 +22,19 @@ const SendHealthCheckButton = () => {
   const handleClick = async () => {
     setLoading(true);
     try {
-      await sendBrowserMessage({
+      const response = await sendBrowserMessage({
         requestType: BrowserRequestType.HEALTH_CHECK,
         payload: undefined,
       });
+      if (response) {
+        if (!response.hasFailed && response.payload.isAlive) {
+          console.log('Browser health check successful');
+        } else {
+          console.error('Browser health check failed');
+        }
+      } else {
+        console.error('Browser health check failed');
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -40,8 +54,10 @@ const SendHealthCheckButton = () => {
   );
 };
 
+// This function is used to render the form that allows users to open a URL in the browser.
 export const BrowserForm = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const handleSubmit = async (data: { url: string }) => {
     setLoading(true);
@@ -52,8 +68,13 @@ export const BrowserForm = () => {
           url: data.url,
         },
       });
+      setError(null);
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        setError(error);
+      } else {
+        setError(new Error('Something went wrong'));
+      }
     } finally {
       setLoading(false);
     }
@@ -83,6 +104,18 @@ export const BrowserForm = () => {
           />
         )}
       />
+      {error && (
+        <div
+          style={{
+            color: '#f44336',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            marginTop: '1.2rem',
+          }}
+        >
+          {error.message}
+        </div>
+      )}
       <Button loading={loading} size="medium" color="colorless" type="submit">
         Go
       </Button>

@@ -21,6 +21,9 @@ export enum InjectedAppsCrossWindowRequestType {
   HEALTH_CHECK = 'HEALTH_CHECK',
 }
 
+/**
+ * This is a utility type that models a message that can be sent from a sender window to a recipient window.
+ * */
 export type SenderMessage<RequestType extends string, RequestPayload> = {
   type: MessageType.REQUEST;
   senderType: WindowType;
@@ -28,6 +31,19 @@ export type SenderMessage<RequestType extends string, RequestPayload> = {
   requestId: string;
   requestType: RequestType;
   payload: RequestPayload;
+};
+
+// This is the type of the message payload that the injected app will send back
+// to the host app in response to a request.
+
+export type InjectedAppsMessagePayload = {
+  [InjectedAppsCrossWindowRequestType.RENDER_COMPONENT]: {
+    type: 'injected_sidebar';
+  };
+  [InjectedAppsCrossWindowRequestType.DESTROY_COMPONENT]: {
+    type: 'injected_sidebar';
+  };
+  [InjectedAppsCrossWindowRequestType.HEALTH_CHECK]: void;
 };
 
 export type SuccessResponse<ResponsePayload> = {
@@ -47,20 +63,14 @@ export type HandlerResponse<MessagePayload> =
   | SuccessResponse<MessagePayload>
   | FailureResponse;
 
+// This is a type definition for the recipient response.
+// It is used in the code when we are sending a response to a request that was sent by the recipient.
+// The type is of type RESPONSE and contains the id of the request that we are responding to.
+
 export type RecipientResponse<MessagePayload> = {
   type: MessageType.RESPONSE;
   requestId: string;
 } & HandlerResponse<MessagePayload>;
-
-export type InjectedAppsMessagePayload = {
-  [InjectedAppsCrossWindowRequestType.RENDER_COMPONENT]: {
-    type: 'injected_sidebar';
-  };
-  [InjectedAppsCrossWindowRequestType.DESTROY_COMPONENT]: {
-    type: 'injected_sidebar';
-  };
-  [InjectedAppsCrossWindowRequestType.HEALTH_CHECK]: void;
-};
 
 export type InjectedAppsMessageResponse = {
   [InjectedAppsCrossWindowRequestType.RENDER_COMPONENT]: void;
