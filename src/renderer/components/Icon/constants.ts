@@ -17,6 +17,11 @@ import {
   UilPlusCircle,
   UilPlusSquare,
   Uil3Plus,
+  UilCrosshair,
+  UilCrosshairAlt,
+  UilHunting,
+  UilFocusTarget,
+  UilCrosshairs,
 } from '@iconscout/react-unicons';
 
 export const IconMap = {
@@ -38,4 +43,9 @@ export const IconMap = {
   searchMinus: UilSearchMinus,
   searchPlus: UilSearchPlus,
   fileSearchAlt: UilFileSearchAlt,
+  crosshair: UilCrosshair,
+  crosshairAlt: UilCrosshairAlt,
+  hunting: UilHunting,
+  focusTarget: UilFocusTarget,
+  crosshairs: UilCrosshairs,
 };

@@ -9,7 +9,7 @@ import {
 } from '../../../main/lib/MessageBridge/types';
 import { useCrossWindowMessage } from '../../customHooks/useCrossWindowMessage';
 
-// export { BrowserMessage, BrowserResponse, BrowserRequestType };
+export { BrowserRequestType };
 
 export const useBrowserMessage = () => {
   const { sendMessage: originalSendMessage } = useCrossWindowMessage({
@@ -17,9 +17,18 @@ export const useBrowserMessage = () => {
   });
 
   const sendBrowserMessage = async <
-    Message extends Pick<BrowserMessage, 'requestType' | 'payload'>
+    Message extends Pick<BrowserMessage, 'requestType' | 'payload'> & {
+      noTimeout?: boolean;
+    }
   >(
-    message: Message
+    message: Message,
+    onError?: ({
+      code,
+      reason,
+    }: {
+      code: number | string;
+      reason: string;
+    }) => void
   ): Promise<
     Message['requestType'] extends infer R
       ? R extends BrowserRequestType
@@ -27,11 +36,14 @@ export const useBrowserMessage = () => {
         : never
       : never
   > => {
-    const response = await originalSendMessage({
-      ...message,
-      recipientType: SecondaryWindowType.BROWSER,
-      senderType: MainWindowType.DEFAULT,
-    });
+    const response = await originalSendMessage(
+      {
+        ...message,
+        recipientType: SecondaryWindowType.BROWSER,
+        senderType: MainWindowType.DEFAULT,
+      },
+      onError
+    );
 
     return response as any;
   };

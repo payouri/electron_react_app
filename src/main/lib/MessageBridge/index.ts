@@ -23,7 +23,7 @@ export const MessageBridgeHandler = async (
     ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
       type: MessageType.ERROR,
       error: {
-        message: 'Request timed out',
+        reason: 'Unknown IPC message type',
         code: 'TIMEOUT',
       },
     });
@@ -34,13 +34,15 @@ export const MessageBridgeHandler = async (
     const timeout = createTimeout({
       timeoutMS: 5000,
       onTimeout: () => {
+        if (message.noTimeout) return;
+
         pendingRequests.delete(message.requestId);
         ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
           type: MessageType.RESPONSE,
           requestId: message.requestId,
           hasFailed: true,
           error: {
-            message: 'Request timed out',
+            reason: 'Request timed out',
             code: 'TIMEOUT',
           },
         });
@@ -53,10 +55,29 @@ export const MessageBridgeHandler = async (
     });
 
     if (isSecondaryWindowType(message.recipientType)) {
-      (await getSecondaryWindow(message.recipientType)).webContents.send(
-        CROSS_WINDOW_CHANNEL,
-        message
-      );
+      const browser = await getSecondaryWindow(message.recipientType);
+
+      const url = browser.webContents.getURL();
+
+      if (!url) {
+        const requestPending = pendingRequests.get(message.requestId)!;
+        pendingRequests.delete(message.requestId);
+        requestPending.timeout.clear();
+
+        ipcEvent.reply(CROSS_WINDOW_CHANNEL, {
+          type: MessageType.ERROR,
+          requestId: message.requestId,
+          hasFailed: true,
+          error: {
+            reason: 'Browser window is not ready, it has no URL',
+            code: 'MISSING_URL',
+          },
+        });
+
+        return;
+      }
+
+      browser.webContents.send(CROSS_WINDOW_CHANNEL, message);
     } else if (isMainWindowType(message.recipientType)) {
       getMainWindow()?.webContents.send(CROSS_WINDOW_CHANNEL, message);
     }

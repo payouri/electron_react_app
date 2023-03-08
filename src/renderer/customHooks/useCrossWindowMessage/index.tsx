@@ -21,7 +21,14 @@ export const useCrossWindowMessage = <
   const handleRequest = crossWindowRequestHandler(windowType);
 
   const sendMessage = async (
-    request: Omit<SenderMessage<Type, ResponseType>, 'requestId' | 'type'>
+    request: Omit<SenderMessage<Type, ResponseType>, 'requestId' | 'type'>,
+    onError?: ({
+      code,
+      reason,
+    }: {
+      code: number | string;
+      reason: string;
+    }) => void
   ) => {
     const response = await window.electron.ipcRenderer.sendCrossWindowRequest({
       ...request,
@@ -29,7 +36,7 @@ export const useCrossWindowMessage = <
       type: MessageType.REQUEST,
     });
 
-    return handleResponse(response);
+    return handleResponse(response, onError);
   };
 
   useEffect(() => {

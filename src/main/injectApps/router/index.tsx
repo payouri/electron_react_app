@@ -31,6 +31,10 @@ export const getInjectedAppsIPCRoutes = ({
   > => {
     const { type } = payload;
     return new Promise((resolve, reject) => {
+      if (root) {
+        root.unmount();
+        root = null;
+      }
       switch (type) {
         case 'injected_sidebar': {
           render(InjectedSidebar(), microAppMountNode, () => {
@@ -40,6 +44,18 @@ export const getInjectedAppsIPCRoutes = ({
             });
             onAppMount(type);
           });
+          break;
+        }
+        case 'element_picker': {
+          root = createRoot(microAppMountNode);
+          if (microAppMountNode instanceof HTMLElement) {
+            microAppMountNode.style.position = 'fixed';
+            microAppMountNode.style.top = '0';
+            microAppMountNode.style.left = '0';
+          }
+          root.render(<ElementPicker elementType="image" />);
+          pageNode.appendChild(microAppMountNode);
+
           break;
         }
         default:
@@ -57,9 +73,13 @@ export const getInjectedAppsIPCRoutes = ({
     const { type } = payload;
 
     switch (type) {
-      case 'injected_sidebar': {
-        unmountComponentAtNode(microAppMountNode);
-        onAppUnMount(type);
+      case 'injected_sidebar':
+      case 'element_picker': {
+        if (root) {
+          root.unmount();
+          root = null;
+        }
+
         return {
           hasFailed: false,
           payload: undefined,
@@ -74,16 +94,6 @@ export const getInjectedAppsIPCRoutes = ({
       InjectedAppsMessageResponse[InjectedAppsCrossWindowRequestType.HEALTH_CHECK]
     >
   > => {
-    if (!root) {
-      root = createRoot(microAppMountNode);
-      if (microAppMountNode instanceof HTMLElement) {
-        microAppMountNode.style.position = 'fixed';
-        microAppMountNode.style.top = '0';
-        microAppMountNode.style.left = '0';
-      }
-      root.render(<ElementPicker elementType="image" />);
-      pageNode.appendChild(microAppMountNode);
-    }
     return Promise.resolve({
       hasFailed: false,
       payload: { isAlive: true },

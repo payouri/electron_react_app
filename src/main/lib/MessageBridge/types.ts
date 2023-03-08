@@ -19,6 +19,7 @@ export type SenderMessage<RequestType extends string, RequestPayload> = {
   requestId: string;
   requestType: RequestType;
   payload: RequestPayload;
+  noTimeout?: boolean;
 };
 
 export type SuccessResponse<ResponsePayload> = {

@@ -8,6 +8,7 @@ export const CustomInput = styled(BaseInput)`
   padding: 0 ${(props) => props.theme.gap[8]};
   min-height: 38px;
   color: ${(props) => props.theme.grayscale[0]};
+  flex: 1;
 
   .rc-input-wrapper.rc-input-group {
     display: flex;
@@ -16,6 +17,7 @@ export const CustomInput = styled(BaseInput)`
     height: 100%;
 
     .rc-input {
+      flex: 1;
       color: currentColor;
       font-size: inherit;
       border: 0;

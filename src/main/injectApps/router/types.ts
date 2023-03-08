@@ -1,3 +1,5 @@
+import { ElementPickerProps } from '../components/ElementPicker/types';
+
 export enum SecondaryWindowType {
   DEFAULT = 'DEFAULT',
   BROWSER = 'BROWSER',
@@ -37,11 +39,16 @@ export type SenderMessage<RequestType extends string, RequestPayload> = {
 // to the host app in response to a request.
 
 export type InjectedAppsMessagePayload = {
-  [InjectedAppsCrossWindowRequestType.RENDER_COMPONENT]: {
-    type: 'injected_sidebar';
-  };
+  [InjectedAppsCrossWindowRequestType.RENDER_COMPONENT]:
+    | {
+        type: 'injected_sidebar';
+      }
+    | {
+        type: 'element_picker';
+        props: ElementPickerProps;
+      };
   [InjectedAppsCrossWindowRequestType.DESTROY_COMPONENT]: {
-    type: 'injected_sidebar';
+    type: 'injected_sidebar' | 'element_picker';
   };
   [InjectedAppsCrossWindowRequestType.HEALTH_CHECK]: void;
 };
@@ -84,4 +91,4 @@ export type IncomingIPCMessage<
 
 export type OutGoingIPCMessage<
   Type extends InjectedAppsCrossWindowRequestType = InjectedAppsCrossWindowRequestType
-> = RecipientResponse<InjectedAppsMessageResponse[Type]>;
+> = SuccessResponse<InjectedAppsMessageResponse[Type]> | null;
